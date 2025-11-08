@@ -1,0 +1,137 @@
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
+import { Button } from './ui/button';
+import { useLanguage } from '@/hooks/useLanguage';
+
+const Header = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { language, toggleLanguage, t } = useLanguage();
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      setMobileMenuOpen(false);
+    }
+  };
+
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-sm border-b border-border">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <div className="bg-primary text-primary-foreground font-bold text-2xl px-3 py-1 rounded-lg">
+              BT
+            </div>
+            <span className="font-semibold text-lg hidden sm:inline">Hernandarias</span>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-8">
+            <button
+              onClick={() => scrollToSection('hero')}
+              className="text-foreground hover:text-primary transition-colors"
+            >
+              {t('nav.home')}
+            </button>
+            <button
+              onClick={() => scrollToSection('tournaments')}
+              className="text-foreground hover:text-primary transition-colors"
+            >
+              {t('nav.tournaments')}
+            </button>
+            <button
+              onClick={() => scrollToSection('about')}
+              className="text-foreground hover:text-primary transition-colors"
+            >
+              {t('nav.about')}
+            </button>
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="text-foreground hover:text-primary transition-colors"
+            >
+              {t('nav.contact')}
+            </button>
+            <button
+              onClick={() => scrollToSection('inscription')}
+              className="text-foreground hover:text-primary transition-colors"
+            >
+              {t('nav.signup')}
+            </button>
+          </nav>
+
+          {/* CTA and Language Selector */}
+          <div className="hidden md:flex items-center gap-4">
+            <button
+              onClick={toggleLanguage}
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {language === 'es' ? 'PT' : 'ES'}
+            </button>
+            <Button onClick={() => scrollToSection('inscription')} size="lg">
+              {t('cta.signup')}
+            </Button>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <nav className="md:hidden mt-4 pb-4 flex flex-col gap-4">
+            <button
+              onClick={() => scrollToSection('hero')}
+              className="text-left py-2 text-foreground hover:text-primary transition-colors"
+            >
+              {t('nav.home')}
+            </button>
+            <button
+              onClick={() => scrollToSection('tournaments')}
+              className="text-left py-2 text-foreground hover:text-primary transition-colors"
+            >
+              {t('nav.tournaments')}
+            </button>
+            <button
+              onClick={() => scrollToSection('about')}
+              className="text-left py-2 text-foreground hover:text-primary transition-colors"
+            >
+              {t('nav.about')}
+            </button>
+            <button
+              onClick={() => scrollToSection('contact')}
+              className="text-left py-2 text-foreground hover:text-primary transition-colors"
+            >
+              {t('nav.contact')}
+            </button>
+            <button
+              onClick={() => scrollToSection('inscription')}
+              className="text-left py-2 text-foreground hover:text-primary transition-colors"
+            >
+              {t('nav.signup')}
+            </button>
+            <div className="flex items-center gap-4 mt-2">
+              <button
+                onClick={toggleLanguage}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {language === 'es' ? 'PT' : 'ES'}
+              </button>
+              <Button onClick={() => scrollToSection('inscription')} className="flex-1">
+                {t('cta.signup')}
+              </Button>
+            </div>
+          </nav>
+        )}
+      </div>
+    </header>
+  );
+};
+
+export default Header;
