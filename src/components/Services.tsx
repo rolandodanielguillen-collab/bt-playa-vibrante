@@ -1,4 +1,4 @@
-import { Trophy, GraduationCap, Calendar } from 'lucide-react';
+import { Trophy, Award, Users } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardHeader, CardTitle, CardDescription } from './ui/card';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -20,14 +20,14 @@ const Services = () => {
       description: t('services.tournaments.desc'),
     },
     {
-      icon: GraduationCap,
-      title: t('services.classes.title'),
-      description: t('services.classes.desc'),
+      icon: Award,
+      title: t('services.regional.title'),
+      description: t('services.regional.desc'),
     },
     {
-      icon: Calendar,
-      title: t('services.rental.title'),
-      description: t('services.rental.desc'),
+      icon: Users,
+      title: t('services.competitive.title'),
+      description: t('services.competitive.desc'),
     },
   ];
 
