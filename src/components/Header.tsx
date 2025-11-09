@@ -46,10 +46,9 @@ const Header = () => {
               }, 100);
               setMobileMenuOpen(false);
             }}
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            className="hover:opacity-80 transition-opacity"
           >
-            <img src={logo} alt="Beach Tennis Hernandarias" className="h-12 w-auto" />
-            <span className="font-semibold text-lg hidden sm:inline">Hernandarias</span>
+            <img src={logo} alt="Beach Tennis Hernandarias" className="h-16 w-auto" />
           </button>
 
           {/* Desktop Navigation */}
