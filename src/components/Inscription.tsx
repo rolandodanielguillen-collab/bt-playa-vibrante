@@ -8,7 +8,12 @@ import { Label } from './ui/label';
 import { useLanguage } from '@/hooks/useLanguage';
 import { toast } from 'sonner';
 
-const Inscription = () => {
+interface InscriptionProps {
+  tournamentId?: string;
+  tournamentName?: string;
+}
+
+const Inscription = ({ tournamentId, tournamentName }: InscriptionProps) => {
   const { t } = useLanguage();
   const [formData, setFormData] = useState({
     player1FirstName: '',
@@ -51,8 +56,10 @@ const Inscription = () => {
 
     // WhatsApp message
     const phone = '595981189807';
+    const tournamentInfo = tournamentName ? `*Torneo:* ${tournamentName}\n\n` : '';
     const message = encodeURIComponent(
       `*Nueva Inscripción - BT Hernandarias*\n\n` +
+      tournamentInfo +
       `*JUGADOR 1*\n` +
       `Nombre: ${formData.player1FirstName} ${formData.player1LastName}\n` +
       `Documento: ${formData.player1Document}\n` +

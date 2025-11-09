@@ -54,7 +54,7 @@ const Header = () => {
               {t('nav.contact')}
             </button>
             <button
-              onClick={() => scrollToSection('inscription')}
+              onClick={() => scrollToSection('tournaments')}
               className="text-foreground hover:text-primary transition-colors"
             >
               {t('nav.signup')}
@@ -69,7 +69,7 @@ const Header = () => {
             >
               {language === 'es' ? 'PT' : 'ES'}
             </button>
-            <Button onClick={() => scrollToSection('inscription')} size="lg">
+            <Button onClick={() => scrollToSection('tournaments')} size="lg">
               {t('cta.signup')}
             </Button>
           </div>
@@ -111,7 +111,7 @@ const Header = () => {
               {t('nav.contact')}
             </button>
             <button
-              onClick={() => scrollToSection('inscription')}
+              onClick={() => scrollToSection('tournaments')}
               className="text-left py-2 text-foreground hover:text-primary transition-colors"
             >
               {t('nav.signup')}
@@ -123,7 +123,7 @@ const Header = () => {
               >
                 {language === 'es' ? 'PT' : 'ES'}
               </button>
-              <Button onClick={() => scrollToSection('inscription')} className="flex-1">
+              <Button onClick={() => scrollToSection('tournaments')} className="flex-1">
                 {t('cta.signup')}
               </Button>
             </div>
