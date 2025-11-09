@@ -2,14 +2,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Calendar, Trophy, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useLanguage, LanguageProvider } from '@/hooks/useLanguage';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Inscription from '@/components/Inscription';
 import tournament1 from '@/assets/tournament-1.jpg';
 import tournament2 from '@/assets/tournament-2.jpg';
 
-const TournamentDetails = () => {
+const TournamentDetailsContent = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useLanguage();
@@ -164,6 +164,14 @@ const TournamentDetails = () => {
 
       <Footer />
     </div>
+  );
+};
+
+const TournamentDetails = () => {
+  return (
+    <LanguageProvider>
+      <TournamentDetailsContent />
+    </LanguageProvider>
   );
 };
 
