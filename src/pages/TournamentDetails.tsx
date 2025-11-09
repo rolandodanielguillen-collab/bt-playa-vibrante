@@ -130,17 +130,17 @@ const TournamentDetailsContent = () => {
           </div>
 
           {/* Tournament Navigation Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {/* Categories Card */}
             <Card 
               className="hover:shadow-xl hover:scale-105 transition-all cursor-pointer group"
               onClick={() => setCategoriesOpen(true)}
             >
-              <CardContent className="p-6 flex flex-col items-center text-center gap-3">
-                <div className="p-4 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
-                  <Users className="h-10 w-10 text-primary" />
+              <CardContent className="p-8 flex flex-col items-center text-center gap-4">
+                <div className="p-5 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
+                  <Users className="h-12 w-12 text-primary" />
                 </div>
-                <h3 className="font-bold text-lg">{t('tournaments.details.categories')}</h3>
+                <h3 className="font-bold text-xl">{t('tournaments.details.categories')}</h3>
               </CardContent>
             </Card>
 
@@ -149,11 +149,11 @@ const TournamentDetailsContent = () => {
               className="hover:shadow-xl hover:scale-105 transition-all cursor-pointer group"
               onClick={() => setScheduleOpen(true)}
             >
-              <CardContent className="p-6 flex flex-col items-center text-center gap-3">
-                <div className="p-4 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
-                  <Clock className="h-10 w-10 text-primary" />
+              <CardContent className="p-8 flex flex-col items-center text-center gap-4">
+                <div className="p-5 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
+                  <Clock className="h-12 w-12 text-primary" />
                 </div>
-                <h3 className="font-bold text-lg">Cronograma</h3>
+                <h3 className="font-bold text-xl">Cronograma</h3>
               </CardContent>
             </Card>
 
@@ -162,11 +162,11 @@ const TournamentDetailsContent = () => {
               className="hover:shadow-xl hover:scale-105 transition-all cursor-pointer group"
               onClick={() => setRulesOpen(true)}
             >
-              <CardContent className="p-6 flex flex-col items-center text-center gap-3">
-                <div className="p-4 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
-                  <FileText className="h-10 w-10 text-primary" />
+              <CardContent className="p-8 flex flex-col items-center text-center gap-4">
+                <div className="p-5 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
+                  <FileText className="h-12 w-12 text-primary" />
                 </div>
-                <h3 className="font-bold text-lg">Reglamento</h3>
+                <h3 className="font-bold text-xl">Reglamento</h3>
               </CardContent>
             </Card>
 
@@ -175,11 +175,11 @@ const TournamentDetailsContent = () => {
               className="hover:shadow-xl hover:scale-105 transition-all cursor-pointer group"
               onClick={() => navigate(`/torneo/${id}/llaves`)}
             >
-              <CardContent className="p-6 flex flex-col items-center text-center gap-3">
-                <div className="p-4 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
-                  <GitBranch className="h-10 w-10 text-primary" />
+              <CardContent className="p-8 flex flex-col items-center text-center gap-4">
+                <div className="p-5 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
+                  <GitBranch className="h-12 w-12 text-primary" />
                 </div>
-                <h3 className="font-bold text-lg">Llaves</h3>
+                <h3 className="font-bold text-xl">Llaves</h3>
               </CardContent>
             </Card>
           </div>
