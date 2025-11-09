@@ -87,6 +87,42 @@ const Tournaments = () => {
     </Card>
   );
 
+  const renderCompletedTournamentCard = (tournament: typeof tournaments[0]) => (
+    <Card key={tournament.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+      <div className="relative h-32 overflow-hidden">
+        <img
+          src={tournament.image}
+          alt={tournament.title}
+          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+        />
+        <div className="absolute top-2 right-2 bg-muted text-muted-foreground px-2 py-1 rounded-full font-semibold uppercase text-[10px]">
+          {tournament.category}
+        </div>
+      </div>
+      <div className="p-4">
+        <h4 className="text-lg font-bold mb-3 line-clamp-2">{tournament.title}</h4>
+        <div className="space-y-1 mb-4">
+          <div className="flex items-center text-muted-foreground text-sm">
+            <Calendar className="mr-1.5 h-3 w-3" />
+            <span className="text-xs">{tournament.date}</span>
+          </div>
+          <div className="flex items-center text-muted-foreground text-sm">
+            <MapPin className="mr-1.5 h-3 w-3" />
+            <span className="text-xs">{tournament.location}</span>
+          </div>
+        </div>
+        <Button 
+          size="sm" 
+          variant="outline"
+          className="w-full"
+          onClick={() => navigate(`/torneo/${tournament.id}`)}
+        >
+          {t('tournaments.viewDetails')}
+        </Button>
+      </div>
+    </Card>
+  );
+
   return (
     <section id="tournaments" className="py-20 bg-background">
       <div className="container mx-auto px-4">
@@ -151,8 +187,8 @@ const Tournaments = () => {
         {completedTournaments.length > 0 && (
           <div className="mb-16">
             <h3 className="text-3xl font-bold mb-8 text-center">{t('tournaments.completed')}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {completedTournaments.map(renderTournamentCard)}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {completedTournaments.map(renderCompletedTournamentCard)}
             </div>
           </div>
         )}
