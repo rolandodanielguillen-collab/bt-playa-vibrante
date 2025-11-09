@@ -163,35 +163,56 @@ const Tournaments = () => {
           </Button>
         </div>
 
-        {/* Torneos en Curso */}
-        {ongoingTournaments.length > 0 && (
-          <div className="mb-16">
-            <h3 className="text-3xl font-bold mb-8 text-center">{t('tournaments.ongoing')}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {ongoingTournaments.map(renderTournamentCard)}
+        {/* Tres columnas: En Curso, Próximos, Culminados */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Columna 1: Torneos en Curso */}
+          <div className="space-y-6">
+            <h3 className="text-2xl font-bold text-center pb-4 border-b-2 border-primary">
+              {t('tournaments.ongoing')}
+            </h3>
+            <div className="space-y-6">
+              {ongoingTournaments.length > 0 ? (
+                ongoingTournaments.map(renderTournamentCard)
+              ) : (
+                <p className="text-center text-muted-foreground py-8">
+                  No hay torneos en curso
+                </p>
+              )}
             </div>
           </div>
-        )}
 
-        {/* Próximos Torneos */}
-        {upcomingTournaments.length > 0 && (
-          <div className="mb-16">
-            <h3 className="text-3xl font-bold mb-8 text-center">{t('tournaments.upcoming')}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {upcomingTournaments.map(renderTournamentCard)}
+          {/* Columna 2: Próximos Torneos */}
+          <div className="space-y-6">
+            <h3 className="text-2xl font-bold text-center pb-4 border-b-2 border-primary">
+              {t('tournaments.upcoming')}
+            </h3>
+            <div className="space-y-6">
+              {upcomingTournaments.length > 0 ? (
+                upcomingTournaments.map(renderTournamentCard)
+              ) : (
+                <p className="text-center text-muted-foreground py-8">
+                  No hay próximos torneos
+                </p>
+              )}
             </div>
           </div>
-        )}
 
-        {/* Torneos Culminados */}
-        {completedTournaments.length > 0 && (
-          <div className="mb-16">
-            <h3 className="text-3xl font-bold mb-8 text-center">{t('tournaments.completed')}</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {completedTournaments.map(renderCompletedTournamentCard)}
+          {/* Columna 3: Torneos Culminados */}
+          <div className="space-y-6">
+            <h3 className="text-2xl font-bold text-center pb-4 border-b-2 border-primary">
+              {t('tournaments.completed')}
+            </h3>
+            <div className="space-y-4">
+              {completedTournaments.length > 0 ? (
+                completedTournaments.map(renderCompletedTournamentCard)
+              ) : (
+                <p className="text-center text-muted-foreground py-8">
+                  No hay torneos culminados
+                </p>
+              )}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </section>
   );
