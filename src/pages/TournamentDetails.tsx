@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, MapPin, Calendar, Trophy, DollarSign } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Trophy, DollarSign, Users, Clock, FileText, GitBranch } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLanguage, LanguageProvider } from '@/hooks/useLanguage';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -122,38 +122,119 @@ const TournamentDetailsContent = () => {
             </div>
           </div>
 
-          {/* Categories Section */}
-          <Card className="p-8 mb-12">
-            <h2 className="text-3xl font-bold mb-6 text-foreground">
-              {t('tournaments.details.categories')}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {tournament.categories.map((cat, index) => (
-                <div key={index} className="p-6 bg-muted/50 rounded-lg">
-                  <h3 className="text-xl font-bold mb-2 text-primary">{cat.name}</h3>
-                  <p className="text-muted-foreground">{cat.description}</p>
+          {/* Tournament Information Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {/* Categories Card */}
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Users className="h-6 w-6 text-primary" />
+                  </div>
+                  {t('tournaments.details.categories')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {tournament.categories.map((cat, index) => (
+                    <div key={index} className="p-4 bg-muted/50 rounded-lg">
+                      <h3 className="text-lg font-bold mb-1 text-primary">{cat.name}</h3>
+                      <p className="text-sm text-muted-foreground">{cat.description}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </Card>
+              </CardContent>
+            </Card>
 
-          {/* Prizes Section */}
-          <Card className="p-8 mb-12">
-            <h2 className="text-3xl font-bold mb-6 text-foreground">
-              {t('tournaments.details.prizes')}
-            </h2>
-            <div className="space-y-4">
-              {tournament.prizes.map((prize, index) => (
-                <div 
-                  key={index} 
-                  className="flex justify-between items-center p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg"
-                >
-                  <span className="text-lg font-semibold text-foreground">{prize.position}</span>
-                  <span className="text-lg font-bold text-primary">{prize.prize}</span>
+            {/* Schedule Card */}
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Clock className="h-6 w-6 text-primary" />
+                  </div>
+                  Cronograma
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                    <span className="font-semibold text-foreground">Inscripciones</span>
+                    <span className="text-sm text-muted-foreground">Hasta 3 días antes</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                    <span className="font-semibold text-foreground">Sorteo</span>
+                    <span className="text-sm text-muted-foreground">1 día antes</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                    <span className="font-semibold text-foreground">Inicio</span>
+                    <span className="text-sm text-muted-foreground">{tournament.date}</span>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                    <span className="font-semibold text-foreground">Final</span>
+                    <span className="text-sm text-muted-foreground">Mismo día</span>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </Card>
+              </CardContent>
+            </Card>
+
+            {/* Rules Card */}
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <FileText className="h-6 w-6 text-primary" />
+                  </div>
+                  Reglamento
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3 text-sm text-muted-foreground">
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary font-bold">•</span>
+                    <span>Sistema de eliminación directa</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary font-bold">•</span>
+                    <span>Partidos a 2 sets ganados, tie-break en caso de empate</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary font-bold">•</span>
+                    <span>Inscripción incluye indumentaria oficial del torneo</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-primary font-bold">•</span>
+                    <span>Sorteo aleatorio para conformar llaves</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Brackets/Prizes Card */}
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <GitBranch className="h-6 w-6 text-primary" />
+                  </div>
+                  Premios
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {tournament.prizes.map((prize, index) => (
+                    <div 
+                      key={index} 
+                      className="flex justify-between items-center p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-lg"
+                    >
+                      <span className="font-semibold text-foreground">{prize.position}</span>
+                      <span className="font-bold text-primary">{prize.prize}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Inscription Form */}
           <div id="inscription-form">
