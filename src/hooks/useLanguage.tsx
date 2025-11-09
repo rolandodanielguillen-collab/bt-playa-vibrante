@@ -39,8 +39,11 @@ const translations = {
     'about.text': 'BT (Beach Tennis Hernandarias) es una organización dedicada a impulsar el crecimiento del beach tennis en la región de Hernandarias, Paraguay. Organizamos torneos competitivos que reúnen a jugadores de todos los niveles, desde amateurs hasta profesionales. Nuestra misión es fomentar la pasión por el deporte y crear una comunidad activa y alegre alrededor del beach tennis.',
     
     // Tournaments
-    'tournaments.title': 'Próximos Torneos',
+    'tournaments.title': 'Torneos',
     'tournaments.subtitle': 'Participa en nuestros emocionantes torneos',
+    'tournaments.ongoing': 'Torneos en Curso',
+    'tournaments.upcoming': 'Próximos Torneos',
+    'tournaments.completed': 'Torneos Culminados',
     'tournaments.all': 'Todos',
     'tournaments.amateur': 'Amateur',
     'tournaments.mixed': 'Mixto',
@@ -122,8 +125,11 @@ const translations = {
     'about.text': 'BT (Beach Tennis Hernandarias) é uma organização dedicada a impulsionar o crescimento do beach tennis na região de Hernandarias, Paraguai. Organizamos torneios competitivos que reúnem jogadores de todos os níveis, desde amadores até profissionais. Nossa missão é fomentar a paixão pelo esporte e criar uma comunidade ativa e alegre em torno do beach tennis.',
     
     // Tournaments
-    'tournaments.title': 'Próximos Torneios',
+    'tournaments.title': 'Torneios',
     'tournaments.subtitle': 'Participe dos nossos emocionantes torneios',
+    'tournaments.ongoing': 'Torneios em Andamento',
+    'tournaments.upcoming': 'Próximos Torneios',
+    'tournaments.completed': 'Torneios Finalizados',
     'tournaments.all': 'Todos',
     'tournaments.amateur': 'Amador',
     'tournaments.mixed': 'Misto',
