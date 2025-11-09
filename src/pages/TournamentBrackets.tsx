@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GroupStage } from "@/components/GroupStage";
 import { KnockoutBracket } from "@/components/KnockoutBracket";
+import { LanguageProvider } from "@/hooks/useLanguage";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -58,7 +59,7 @@ const final = {
   winner: 1 as const,
 };
 
-const TournamentBrackets = () => {
+const TournamentBracketsContent = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -117,6 +118,14 @@ const TournamentBrackets = () => {
 
       <Footer />
     </div>
+  );
+};
+
+const TournamentBrackets = () => {
+  return (
+    <LanguageProvider>
+      <TournamentBracketsContent />
+    </LanguageProvider>
   );
 };
 
