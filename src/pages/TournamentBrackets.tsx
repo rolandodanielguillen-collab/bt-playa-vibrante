@@ -67,14 +67,14 @@ const TournamentBracketsContent = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-8 mt-16">
         <Button
-          variant="ghost"
+          variant="outline"
           className="mb-6"
           onClick={() => navigate(`/torneo/${id}`)}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Volver al torneo
+          Volver a Detalles del Torneo
         </Button>
 
         <div className="space-y-12">
