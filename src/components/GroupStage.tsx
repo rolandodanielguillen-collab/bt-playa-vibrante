@@ -66,6 +66,7 @@ export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) =
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
+                <TableHead className="text-center font-bold text-foreground w-16">Pos.</TableHead>
                 <TableHead className="font-bold text-foreground">{groupName}</TableHead>
                 <TableHead className="text-center font-bold text-foreground" colSpan={3}>
                   Vitórias
@@ -76,6 +77,16 @@ export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) =
             <TableBody>
               {standings.map((team, idx) => (
                 <TableRow key={idx} className="hover:bg-muted/50">
+                  <TableCell className="text-center">
+                    <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold ${
+                      idx === 0 ? 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400' :
+                      idx === 1 ? 'bg-gray-300/20 text-gray-700 dark:text-gray-300' :
+                      idx === 2 ? 'bg-orange-500/20 text-orange-700 dark:text-orange-400' :
+                      'bg-muted text-muted-foreground'
+                    }`}>
+                      {idx + 1}°
+                    </span>
+                  </TableCell>
                   <TableCell className="font-medium text-foreground">
                     {team.team}
                   </TableCell>

@@ -111,6 +111,10 @@ const TournamentBracketsContent = () => {
               quarterfinals={quarterfinals}
               semifinals={semifinals}
               final={final}
+              champion={{
+                name: "R. Kerber\nT. Lazari",
+                score: "Campeones 2025"
+              }}
             />
           </section>
         </div>
