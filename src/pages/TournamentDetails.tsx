@@ -155,7 +155,10 @@ const TournamentDetailsContent = () => {
             </Card>
 
             {/* Brackets Card */}
-            <Card className="hover:shadow-xl hover:scale-105 transition-all cursor-pointer group">
+            <Card 
+              className="hover:shadow-xl hover:scale-105 transition-all cursor-pointer group"
+              onClick={() => navigate(`/torneo/${id}/llaves`)}
+            >
               <CardContent className="p-6 flex flex-col items-center text-center gap-3">
                 <div className="p-4 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
                   <GitBranch className="h-10 w-10 text-primary" />
