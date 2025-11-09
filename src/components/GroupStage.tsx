@@ -30,9 +30,6 @@ export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) =
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Matches Table */}
         <div className="space-y-2">
-          <div className="p-2 bg-card border border-border rounded-lg w-fit">
-            <span className="font-bold text-foreground">📋 CUADRO DE RESULTADOS</span>
-          </div>
           <div className="border border-border rounded-lg overflow-hidden bg-card">
             <Table>
               <TableBody>
@@ -74,8 +71,12 @@ export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) =
         </div>
 
         {/* Standings Table */}
-        <div className="border border-border rounded-lg overflow-hidden bg-card">
-          <Table>
+        <div className="space-y-2">
+          <div className="p-2 bg-card border border-border rounded-lg w-fit">
+            <span className="font-bold text-foreground">📋 CUADRO DE RESULTADOS</span>
+          </div>
+          <div className="border border-border rounded-lg overflow-hidden bg-card">
+            <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
                 <TableHead className="text-center font-bold text-foreground w-16">Pos.</TableHead>
@@ -130,6 +131,7 @@ export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) =
               ))}
             </TableBody>
           </Table>
+          </div>
         </div>
       </div>
     </div>
