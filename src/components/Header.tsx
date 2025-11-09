@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { useLanguage } from '@/hooks/useLanguage';
+import logo from '@/assets/logo-bt.png';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -37,12 +38,19 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-2">
-            <div className="bg-primary text-primary-foreground font-bold text-2xl px-3 py-1 rounded-lg">
-              BT
-            </div>
+          <button 
+            onClick={() => {
+              navigate('/');
+              setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }, 100);
+              setMobileMenuOpen(false);
+            }}
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          >
+            <img src={logo} alt="Beach Tennis Hernandarias" className="h-12 w-auto" />
             <span className="font-semibold text-lg hidden sm:inline">Hernandarias</span>
-          </div>
+          </button>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
