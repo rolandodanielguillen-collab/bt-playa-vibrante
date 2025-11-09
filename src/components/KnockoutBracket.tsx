@@ -112,64 +112,62 @@ export const KnockoutBracket = ({ quarterfinals, semifinals, final, champion }: 
         {/* Connection Line */}
         <div className="hidden lg:block w-8 h-px bg-border self-center" />
 
-        {/* Final */}
+        {/* Final and Champion */}
         <div className="flex flex-col gap-4">
           <h3 className="text-lg font-bold text-center text-foreground mb-2">Final</h3>
-          <div className="flex flex-col justify-center">
-          <Card
-            className={`p-6 min-w-[220px] border-l-4 border-l-primary bg-gradient-to-r from-primary/10 to-transparent`}
-          >
-            <div className="space-y-3">
-              <div
-                className={`text-base font-medium ${
-                  final.winner === 1 ? "text-primary font-bold" : "text-foreground"
-                }`}
-              >
-                {final.team1}
-              </div>
-              {final.score && (
-                <div className="text-sm text-center text-muted-foreground font-mono font-bold">
-                  {final.score}
+          <div className="flex flex-col lg:flex-row gap-4 items-stretch">
+            <Card
+              className={`p-6 min-w-[220px] border-l-4 border-l-primary bg-gradient-to-r from-primary/10 to-transparent`}
+            >
+              <div className="space-y-3">
+                <div
+                  className={`text-base font-medium ${
+                    final.winner === 1 ? "text-primary font-bold" : "text-foreground"
+                  }`}
+                >
+                  {final.team1}
                 </div>
-              )}
-              <div
-                className={`text-base font-medium ${
-                  final.winner === 2 ? "text-primary font-bold" : "text-foreground"
-                }`}
-              >
-                {final.team2}
+                {final.score && (
+                  <div className="text-sm text-center text-muted-foreground font-mono font-bold">
+                    {final.score}
+                  </div>
+                )}
+                <div
+                  className={`text-base font-medium ${
+                    final.winner === 2 ? "text-primary font-bold" : "text-foreground"
+                  }`}
+                >
+                  {final.team2}
+                </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+
+            {/* Champion Card */}
+            {champion && (
+              <Card className="p-6 min-w-[220px] border-2 border-yellow-500/50 bg-gradient-to-br from-yellow-500/10 via-background to-yellow-500/5 shadow-xl">
+                <div className="flex flex-col items-center text-center space-y-3 h-full justify-center">
+                  <div className="p-3 bg-yellow-500/20 rounded-full">
+                    <Trophy className="w-8 h-8 text-yellow-600 dark:text-yellow-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-bold text-yellow-700 dark:text-yellow-500 uppercase tracking-wide mb-2">
+                      🏆 Campeones
+                    </h3>
+                    <p className="text-base font-bold text-foreground whitespace-pre-line">
+                      {champion.name}
+                    </p>
+                    {champion.score && (
+                      <p className="text-sm text-muted-foreground font-mono mt-1">
+                        {champion.score}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            )}
           </div>
         </div>
       </div>
-
-      {/* Champion Card */}
-      {champion && (
-        <div className="flex justify-center mt-12">
-          <Card className="p-8 max-w-md w-full border-2 border-primary bg-gradient-to-br from-primary/5 via-background to-primary/10 shadow-xl">
-            <div className="flex flex-col items-center text-center space-y-4">
-              <div className="p-4 bg-primary/20 rounded-full">
-                <Trophy className="w-12 h-12 text-primary" />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-primary uppercase tracking-wide mb-2">
-                  🏆 Campeones
-                </h3>
-                <p className="text-2xl font-bold text-foreground whitespace-pre-line">
-                  {champion.name}
-                </p>
-                {champion.score && (
-                  <p className="text-lg text-muted-foreground font-mono mt-2">
-                    {champion.score}
-                  </p>
-                )}
-              </div>
-            </div>
-          </Card>
-        </div>
-      )}
     </div>
   );
 };
