@@ -29,43 +29,48 @@ export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) =
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Matches Table */}
-        <div className="border border-border rounded-lg overflow-hidden bg-card">
-          <Table>
-            <TableBody>
-              {matches.map((match, idx) => {
-                const score1 = typeof match.score1 === 'number' ? match.score1 : 0;
-                const score2 = typeof match.score2 === 'number' ? match.score2 : 0;
-                const team1Won = match.score1 === 'WO' || (typeof match.score1 === 'number' && typeof match.score2 === 'number' && score1 > score2);
-                const team2Won = match.score2 === 'WO' || (typeof match.score1 === 'number' && typeof match.score2 === 'number' && score2 > score1);
-                
-                return (
-                  <TableRow key={idx} className="hover:bg-muted/50">
-                    <TableCell className={`font-medium text-foreground ${team1Won ? 'bg-green-500/10' : ''}`}>
-                      {match.team1}
-                    </TableCell>
-                    <TableCell className={`text-center w-16 ${team1Won ? 'bg-green-500/10' : ''}`}>
-                      {match.score1 !== undefined ? (
-                        <span className="font-bold">{match.score1}</span>
-                      ) : (
-                        <span className="text-muted-foreground">-</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-center w-8 text-muted-foreground">x</TableCell>
-                    <TableCell className={`text-center w-16 ${team2Won ? 'bg-green-500/10' : ''}`}>
-                      {match.score2 !== undefined ? (
-                        <span className="font-bold">{match.score2}</span>
-                      ) : (
-                        <span className="text-muted-foreground">-</span>
-                      )}
-                    </TableCell>
-                    <TableCell className={`font-medium text-foreground ${team2Won ? 'bg-green-500/10' : ''}`}>
-                      {match.team2}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+        <div className="space-y-2">
+          <div className="p-2 bg-card border border-border rounded-lg w-fit">
+            <span className="font-bold text-foreground">📋 CUADRO DE RESULTADOS</span>
+          </div>
+          <div className="border border-border rounded-lg overflow-hidden bg-card">
+            <Table>
+              <TableBody>
+                {matches.map((match, idx) => {
+                  const score1 = typeof match.score1 === 'number' ? match.score1 : 0;
+                  const score2 = typeof match.score2 === 'number' ? match.score2 : 0;
+                  const team1Won = match.score1 === 'WO' || (typeof match.score1 === 'number' && typeof match.score2 === 'number' && score1 > score2);
+                  const team2Won = match.score2 === 'WO' || (typeof match.score1 === 'number' && typeof match.score2 === 'number' && score2 > score1);
+                  
+                  return (
+                    <TableRow key={idx} className="hover:bg-muted/50">
+                      <TableCell className={`font-medium text-foreground ${team1Won ? 'bg-green-500/10' : ''}`}>
+                        {match.team1}
+                      </TableCell>
+                      <TableCell className={`text-center w-16 ${team1Won ? 'bg-green-500/10' : ''}`}>
+                        {match.score1 !== undefined ? (
+                          <span className="font-bold">{match.score1}</span>
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-center w-8 text-muted-foreground">x</TableCell>
+                      <TableCell className={`text-center w-16 ${team2Won ? 'bg-green-500/10' : ''}`}>
+                        {match.score2 !== undefined ? (
+                          <span className="font-bold">{match.score2}</span>
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
+                      <TableCell className={`font-medium text-foreground ${team2Won ? 'bg-green-500/10' : ''}`}>
+                        {match.team2}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
         </div>
 
         {/* Standings Table */}

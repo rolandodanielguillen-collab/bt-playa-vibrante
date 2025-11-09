@@ -106,14 +106,7 @@ const TournamentBracketsContent = () => {
           </section>
 
           {/* Knockout Section */}
-          <section className="space-y-8">
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-card border border-border rounded-lg">
-                <span className="font-bold text-foreground">🏆 CUADRO DE RESULTADOS</span>
-                <p className="text-xs text-muted-foreground">Fase eliminatoria</p>
-              </div>
-            </div>
-
+          <section>
             <KnockoutBracket
               quarterfinals={quarterfinals}
               semifinals={semifinals}
