@@ -3,9 +3,13 @@ import { ArrowLeft, MapPin, Calendar, Trophy, DollarSign, Users, Clock, FileText
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLanguage, LanguageProvider } from '@/hooks/useLanguage';
+import { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Inscription from '@/components/Inscription';
+import { CategoriesModal } from '@/components/CategoriesModal';
+import { ScheduleModal } from '@/components/ScheduleModal';
+import { RulesModal } from '@/components/RulesModal';
 import tournament1 from '@/assets/tournament-1.jpg';
 import tournament2 from '@/assets/tournament-2.jpg';
 
@@ -13,6 +17,9 @@ const TournamentDetailsContent = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const [scheduleOpen, setScheduleOpen] = useState(false);
+  const [rulesOpen, setRulesOpen] = useState(false);
 
   // Tournament data (in a real app, this would come from an API)
   const tournaments = [
@@ -125,7 +132,10 @@ const TournamentDetailsContent = () => {
           {/* Tournament Navigation Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
             {/* Categories Card */}
-            <Card className="hover:shadow-xl hover:scale-105 transition-all cursor-pointer group">
+            <Card 
+              className="hover:shadow-xl hover:scale-105 transition-all cursor-pointer group"
+              onClick={() => setCategoriesOpen(true)}
+            >
               <CardContent className="p-6 flex flex-col items-center text-center gap-3">
                 <div className="p-4 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
                   <Users className="h-10 w-10 text-primary" />
@@ -135,7 +145,10 @@ const TournamentDetailsContent = () => {
             </Card>
 
             {/* Schedule Card */}
-            <Card className="hover:shadow-xl hover:scale-105 transition-all cursor-pointer group">
+            <Card 
+              className="hover:shadow-xl hover:scale-105 transition-all cursor-pointer group"
+              onClick={() => setScheduleOpen(true)}
+            >
               <CardContent className="p-6 flex flex-col items-center text-center gap-3">
                 <div className="p-4 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
                   <Clock className="h-10 w-10 text-primary" />
@@ -145,7 +158,10 @@ const TournamentDetailsContent = () => {
             </Card>
 
             {/* Rules Card */}
-            <Card className="hover:shadow-xl hover:scale-105 transition-all cursor-pointer group">
+            <Card 
+              className="hover:shadow-xl hover:scale-105 transition-all cursor-pointer group"
+              onClick={() => setRulesOpen(true)}
+            >
               <CardContent className="p-6 flex flex-col items-center text-center gap-3">
                 <div className="p-4 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
                   <FileText className="h-10 w-10 text-primary" />
@@ -167,6 +183,22 @@ const TournamentDetailsContent = () => {
               </CardContent>
             </Card>
           </div>
+
+          {/* Modals */}
+          <CategoriesModal 
+            open={categoriesOpen}
+            onOpenChange={setCategoriesOpen}
+            categories={tournament.categories}
+            tournamentId={id}
+          />
+          <ScheduleModal 
+            open={scheduleOpen}
+            onOpenChange={setScheduleOpen}
+          />
+          <RulesModal 
+            open={rulesOpen}
+            onOpenChange={setRulesOpen}
+          />
 
           {/* Inscription Form */}
           <div id="inscription-form">
