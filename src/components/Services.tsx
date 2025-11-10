@@ -61,10 +61,12 @@ const Services = () => {
             <CarouselContent>
               {logos.map((logo, index) => (
                 <CarouselItem key={index} className="basis-1/3 md:basis-1/5 lg:basis-1/6">
-                  <div className="flex items-center justify-center p-4">
-                    <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300">
-                      <logo.icon className={`w-8 h-8 ${logo.color}`} />
-                    </div>
+                  <div className="flex items-center justify-center p-2">
+                    <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 w-20 h-20">
+                      <div className="relative w-full h-full bg-gradient-to-br from-primary/5 to-secondary/5 flex items-center justify-center hover:scale-105 transition-transform duration-300">
+                        <logo.icon className={`w-10 h-10 ${logo.color}`} />
+                      </div>
+                    </Card>
                   </div>
                 </CarouselItem>
               ))}
