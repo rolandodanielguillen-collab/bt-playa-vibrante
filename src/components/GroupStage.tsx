@@ -25,7 +25,15 @@ interface GroupStageProps {
 export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) => {
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl font-bold text-foreground">{groupName}</h3>
+      {/* Títulos en la misma línea */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <h3 className="text-2xl font-bold text-foreground">{groupName}</h3>
+        <div className="flex items-center">
+          <div className="p-2 bg-card border border-border rounded-lg w-fit">
+            <span className="font-bold text-foreground">📋 CUADRO DE RESULTADOS</span>
+          </div>
+        </div>
+      </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Matches Table */}
@@ -72,9 +80,6 @@ export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) =
 
         {/* Standings Table */}
         <div className="space-y-2">
-          <div className="p-2 bg-card border border-border rounded-lg w-fit">
-            <span className="font-bold text-foreground">📋 CUADRO DE RESULTADOS</span>
-          </div>
           <div className="border border-border rounded-lg overflow-hidden bg-card">
             <Table>
             <TableHeader>
