@@ -1,7 +1,9 @@
-import { Trophy, Award, Users } from 'lucide-react';
+import { Trophy, Award, Users, ShieldCheck, Target, Zap, Star, Heart, Crown } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardHeader, CardTitle, CardDescription } from './ui/card';
 import { useLanguage } from '@/hooks/useLanguage';
+import { Carousel, CarouselContent, CarouselItem } from './ui/carousel';
+import Autoplay from 'embla-carousel-autoplay';
 
 const Services = () => {
   const { t } = useLanguage();
@@ -12,6 +14,18 @@ const Services = () => {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  const logos = [
+    { icon: ShieldCheck, color: 'text-primary' },
+    { icon: Target, color: 'text-secondary' },
+    { icon: Zap, color: 'text-primary' },
+    { icon: Star, color: 'text-secondary' },
+    { icon: Heart, color: 'text-primary' },
+    { icon: Crown, color: 'text-secondary' },
+    { icon: Trophy, color: 'text-primary' },
+    { icon: Award, color: 'text-secondary' },
+    { icon: Users, color: 'text-primary' },
+  ];
 
   const services = [
     {
@@ -34,6 +48,30 @@ const Services = () => {
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
+        <div className="mb-12">
+          <Carousel
+            opts={{ align: 'start', loop: true }}
+            plugins={[
+              Autoplay({
+                delay: 2000,
+              }),
+            ]}
+            className="w-full max-w-5xl mx-auto mb-8"
+          >
+            <CarouselContent>
+              {logos.map((logo, index) => (
+                <CarouselItem key={index} className="basis-1/3 md:basis-1/5 lg:basis-1/6">
+                  <div className="flex items-center justify-center p-4">
+                    <div className="w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center hover:scale-110 transition-transform duration-300">
+                      <logo.icon className={`w-8 h-8 ${logo.color}`} />
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+        </div>
+        
         <h2 className="text-4xl md:text-5xl font-bold text-center mb-12">
           {t('services.title')}
         </h2>
