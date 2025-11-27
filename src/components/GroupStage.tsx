@@ -24,20 +24,11 @@ interface GroupStageProps {
 
 export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) => {
   return (
-    <div className="space-y-6">
-      {/* Títulos en la misma línea */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <h3 className="text-2xl font-bold text-foreground">{groupName}</h3>
-        <div className="flex items-center">
-          <div className="p-2 bg-card border border-border rounded-lg w-fit">
-            <span className="font-bold text-foreground">📋 CUADRO DE RESULTADOS</span>
-          </div>
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Matches Table */}
         <div className="space-y-2">
+          <h4 className="text-sm font-bold text-foreground mb-2">📋 Resultados</h4>
           <div className="border border-border rounded-lg overflow-hidden bg-card">
             <Table>
               <TableBody>
@@ -49,25 +40,25 @@ export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) =
                   
                   return (
                     <TableRow key={idx} className="hover:bg-muted/50">
-                      <TableCell className={`font-medium text-foreground ${team1Won ? 'bg-green-500/10' : ''}`}>
+                      <TableCell className={`text-xs md:text-sm font-medium text-foreground py-2 ${team1Won ? 'bg-green-500/10' : ''}`}>
                         {match.team1}
                       </TableCell>
-                      <TableCell className={`text-center w-16 ${team1Won ? 'bg-green-500/10' : ''}`}>
+                      <TableCell className={`text-center w-12 text-xs md:text-sm ${team1Won ? 'bg-green-500/10' : ''}`}>
                         {match.score1 !== undefined ? (
                           <span className="font-bold">{match.score1}</span>
                         ) : (
                           <span className="text-muted-foreground">-</span>
                         )}
                       </TableCell>
-                      <TableCell className="text-center w-8 text-muted-foreground">x</TableCell>
-                      <TableCell className={`text-center w-16 ${team2Won ? 'bg-green-500/10' : ''}`}>
+                      <TableCell className="text-center w-6 text-xs text-muted-foreground">x</TableCell>
+                      <TableCell className={`text-center w-12 text-xs md:text-sm ${team2Won ? 'bg-green-500/10' : ''}`}>
                         {match.score2 !== undefined ? (
                           <span className="font-bold">{match.score2}</span>
                         ) : (
                           <span className="text-muted-foreground">-</span>
                         )}
                       </TableCell>
-                      <TableCell className={`font-medium text-foreground ${team2Won ? 'bg-green-500/10' : ''}`}>
+                      <TableCell className={`text-xs md:text-sm font-medium text-foreground py-2 ${team2Won ? 'bg-green-500/10' : ''}`}>
                         {match.team2}
                       </TableCell>
                     </TableRow>
@@ -80,23 +71,24 @@ export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) =
 
         {/* Standings Table */}
         <div className="space-y-2">
+          <h4 className="text-sm font-bold text-foreground mb-2">🏅 Clasificación</h4>
           <div className="border border-border rounded-lg overflow-hidden bg-card">
             <Table>
             <TableHeader>
               <TableRow className="bg-muted/50">
-                <TableHead className="text-center font-bold text-foreground w-16">Pos.</TableHead>
-                <TableHead className="font-bold text-foreground">{groupName}</TableHead>
-                <TableHead className="text-center font-bold text-foreground" colSpan={3}>
-                  Vitórias
+                <TableHead className="text-center font-bold text-foreground text-xs w-12">Pos.</TableHead>
+                <TableHead className="font-bold text-foreground text-xs">{groupName}</TableHead>
+                <TableHead className="text-center font-bold text-foreground text-xs" colSpan={3}>
+                  Victorias
                 </TableHead>
-                <TableHead className="text-center font-bold text-foreground">SG</TableHead>
+                <TableHead className="text-center font-bold text-foreground text-xs">SG</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {standings.map((team, idx) => (
                 <TableRow key={idx} className="hover:bg-muted/50">
-                  <TableCell className="text-center">
-                    <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold ${
+                  <TableCell className="text-center py-2">
+                    <span className={`inline-flex items-center justify-center w-6 h-6 md:w-7 md:h-7 rounded-full font-bold text-xs ${
                       idx === 0 ? 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400' :
                       idx === 1 ? 'bg-gray-300/20 text-gray-700 dark:text-gray-300' :
                       idx === 2 ? 'bg-orange-500/20 text-orange-700 dark:text-orange-400' :
@@ -105,31 +97,31 @@ export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) =
                       {idx + 1}°
                     </span>
                   </TableCell>
-                  <TableCell className="font-medium text-foreground">
+                  <TableCell className="font-medium text-foreground text-xs md:text-sm py-2">
                     {team.team}
                   </TableCell>
-                  <TableCell className="text-center">
+                  <TableCell className="text-center py-2">
                     {team.match1 ? (
-                      <CheckCircle2 className="w-5 h-5 text-green-600 mx-auto" />
+                      <CheckCircle2 className="w-4 h-4 text-green-600 mx-auto" />
                     ) : (
-                      <XCircle className="w-5 h-5 text-destructive mx-auto" />
+                      <XCircle className="w-4 h-4 text-destructive mx-auto" />
                     )}
                   </TableCell>
-                  <TableCell className="text-center">
+                  <TableCell className="text-center py-2">
                     {team.match2 ? (
-                      <CheckCircle2 className="w-5 h-5 text-green-600 mx-auto" />
+                      <CheckCircle2 className="w-4 h-4 text-green-600 mx-auto" />
                     ) : (
-                      <XCircle className="w-5 h-5 text-destructive mx-auto" />
+                      <XCircle className="w-4 h-4 text-destructive mx-auto" />
                     )}
                   </TableCell>
-                  <TableCell className="text-center">
+                  <TableCell className="text-center py-2">
                     {team.match3 ? (
-                      <CheckCircle2 className="w-5 h-5 text-green-600 mx-auto" />
+                      <CheckCircle2 className="w-4 h-4 text-green-600 mx-auto" />
                     ) : (
-                      <XCircle className="w-5 h-5 text-destructive mx-auto" />
+                      <XCircle className="w-4 h-4 text-destructive mx-auto" />
                     )}
                   </TableCell>
-                  <TableCell className="text-center font-bold text-foreground">
+                  <TableCell className="text-center font-bold text-foreground text-xs md:text-sm py-2">
                     {team.sg}
                   </TableCell>
                 </TableRow>

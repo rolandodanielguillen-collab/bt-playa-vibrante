@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GroupStage } from "@/components/GroupStage";
 import { KnockoutBracket } from "@/components/KnockoutBracket";
 import { LanguageProvider } from "@/hooks/useLanguage";
@@ -77,46 +78,57 @@ const TournamentBracketsContent = () => {
           Volver a Detalles del Torneo
         </Button>
 
-        <div className="space-y-12">
+        <div className="space-y-8">
           <div>
-            <h1 className="text-4xl font-bold text-foreground mb-2">Llaves del Torneo</h1>
-            <p className="text-muted-foreground">Fase de grupos y clasificación eliminatoria</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Llaves del Torneo</h1>
+            <p className="text-sm text-muted-foreground">Fase de grupos y clasificación eliminatoria</p>
           </div>
 
-          {/* Groups Section */}
-          <section className="space-y-8">
-            <div className="flex items-center gap-2">
-              <div className="p-2 bg-card border border-border rounded-lg">
-                <span className="font-bold text-foreground">📊 Grupos</span>
-                <p className="text-xs text-muted-foreground">Tenistas por grupo</p>
-              </div>
-            </div>
+          <Tabs defaultValue="grupos" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsTrigger value="grupos">📊 Grupos</TabsTrigger>
+              <TabsTrigger value="finales">🏆 Finales</TabsTrigger>
+            </TabsList>
 
-            <GroupStage
-              groupName="Grupo A"
-              matches={groupAMatches}
-              standings={groupAStandings}
-            />
+            {/* Groups Section */}
+            <TabsContent value="grupos" className="space-y-6">
+              <Tabs defaultValue="grupo-a" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="grupo-a">Grupo A</TabsTrigger>
+                  <TabsTrigger value="grupo-b">Grupo B</TabsTrigger>
+                </TabsList>
 
-            <GroupStage
-              groupName="Grupo B"
-              matches={groupBMatches}
-              standings={groupBStandings}
-            />
-          </section>
+                <TabsContent value="grupo-a" className="mt-4">
+                  <GroupStage
+                    groupName="Grupo A"
+                    matches={groupAMatches}
+                    standings={groupAStandings}
+                  />
+                </TabsContent>
 
-          {/* Knockout Section */}
-          <section>
-            <KnockoutBracket
-              quarterfinals={quarterfinals}
-              semifinals={semifinals}
-              final={final}
-              champion={{
-                name: "R. Kerber\nT. Lazari",
-                score: "Campeones 2025"
-              }}
-            />
-          </section>
+                <TabsContent value="grupo-b" className="mt-4">
+                  <GroupStage
+                    groupName="Grupo B"
+                    matches={groupBMatches}
+                    standings={groupBStandings}
+                  />
+                </TabsContent>
+              </Tabs>
+            </TabsContent>
+
+            {/* Knockout Section */}
+            <TabsContent value="finales">
+              <KnockoutBracket
+                quarterfinals={quarterfinals}
+                semifinals={semifinals}
+                final={final}
+                champion={{
+                  name: "R. Kerber\nT. Lazari",
+                  score: "Campeones 2025"
+                }}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
 
