@@ -105,10 +105,10 @@ const TournamentDetailsContent = () => {
               />
             </div>
             <div className="flex flex-col justify-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+              <h1 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
                 {tournament.title}
               </h1>
-              <div className="space-y-4 text-lg">
+              <div className="space-y-4 text-base">
                 <div className="flex items-center text-muted-foreground">
                   <Calendar className="mr-3 h-5 w-5 text-primary" />
                   {tournament.date}
@@ -140,7 +140,7 @@ const TournamentDetailsContent = () => {
                 <div className="p-5 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
                   <Users className="h-12 w-12 text-primary" />
                 </div>
-                <h3 className="font-bold text-xl">{t('tournaments.details.categories')}</h3>
+                <h3 className="font-bold text-lg">{t('tournaments.details.categories')}</h3>
               </CardContent>
             </Card>
 
@@ -153,7 +153,7 @@ const TournamentDetailsContent = () => {
                 <div className="p-5 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
                   <Clock className="h-12 w-12 text-primary" />
                 </div>
-                <h3 className="font-bold text-xl">Cronograma</h3>
+                <h3 className="font-bold text-lg">Cronograma</h3>
               </CardContent>
             </Card>
 
@@ -166,7 +166,7 @@ const TournamentDetailsContent = () => {
                 <div className="p-5 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
                   <FileText className="h-12 w-12 text-primary" />
                 </div>
-                <h3 className="font-bold text-xl">Reglamento</h3>
+                <h3 className="font-bold text-lg">Reglamento</h3>
               </CardContent>
             </Card>
 
@@ -179,7 +179,7 @@ const TournamentDetailsContent = () => {
                 <div className="p-5 bg-primary/10 rounded-2xl group-hover:bg-primary/20 transition-colors">
                   <GitBranch className="h-12 w-12 text-primary" />
                 </div>
-                <h3 className="font-bold text-xl">Llaves</h3>
+                <h3 className="font-bold text-lg">Llaves</h3>
               </CardContent>
             </Card>
           </div>
