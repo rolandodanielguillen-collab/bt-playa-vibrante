@@ -80,8 +80,8 @@ const TournamentBracketsContent = () => {
 
         <div className="space-y-8">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Llaves del Torneo</h1>
-            <p className="text-sm text-muted-foreground">Fase de grupos y clasificación eliminatoria</p>
+            <h1 className="text-xl md:text-2xl font-bold text-foreground mb-2">Llaves del Torneo</h1>
+            <p className="text-xs text-muted-foreground">Fase de grupos y clasificación eliminatoria</p>
           </div>
 
           <Tabs defaultValue="grupos" className="w-full">
