@@ -12,6 +12,8 @@ import Auth from "./pages/Auth";
 import AdminLayout from "./layouts/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
 import Tournaments from "./pages/admin/Tournaments";
+import Categories from "./pages/admin/Categories";
+import Players from "./pages/admin/Players";
 import Teams from "./pages/admin/Teams";
 import Courts from "./pages/admin/Courts";
 import Registrations from "./pages/admin/Registrations";
@@ -38,6 +40,8 @@ const App = () => (
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<Dashboard />} />
               <Route path="tournaments" element={<Tournaments />} />
+              <Route path="categories" element={<Categories />} />
+              <Route path="players" element={<Players />} />
               <Route path="teams" element={<Teams />} />
               <Route path="courts" element={<Courts />} />
               <Route path="registrations" element={<Registrations />} />

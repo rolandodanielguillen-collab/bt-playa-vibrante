@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          gender: string | null
+          id: string
+          max_age: number | null
+          min_age: number | null
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          gender?: string | null
+          id?: string
+          max_age?: number | null
+          min_age?: number | null
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          gender?: string | null
+          id?: string
+          max_age?: number | null
+          min_age?: number | null
+          name?: string
+        }
+        Relationships: []
+      }
       courts: {
         Row: {
           created_at: string
@@ -294,6 +324,69 @@ export type Database = {
           },
         ]
       }
+      players: {
+        Row: {
+          birth_date: string | null
+          category_id: string | null
+          city: string | null
+          created_at: string
+          document_number: string | null
+          email: string
+          full_name: string
+          gender: string | null
+          id: string
+          phone: string | null
+          ranking_points: number
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          birth_date?: string | null
+          category_id?: string | null
+          city?: string | null
+          created_at?: string
+          document_number?: string | null
+          email: string
+          full_name: string
+          gender?: string | null
+          id?: string
+          phone?: string | null
+          ranking_points?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          birth_date?: string | null
+          category_id?: string | null
+          city?: string | null
+          created_at?: string
+          document_number?: string | null
+          email?: string
+          full_name?: string
+          gender?: string | null
+          id?: string
+          phone?: string | null
+          ranking_points?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "players_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "players_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -429,6 +522,7 @@ export type Database = {
       tournaments: {
         Row: {
           category: string
+          category_id: string | null
           created_at: string
           created_by: string
           description: string | null
@@ -447,6 +541,7 @@ export type Database = {
         }
         Insert: {
           category: string
+          category_id?: string | null
           created_at?: string
           created_by: string
           description?: string | null
@@ -465,6 +560,7 @@ export type Database = {
         }
         Update: {
           category?: string
+          category_id?: string | null
           created_at?: string
           created_by?: string
           description?: string | null
@@ -482,6 +578,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "tournaments_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "tournaments_created_by_fkey"
             columns: ["created_by"]
