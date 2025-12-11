@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      courts: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          location: string | null
+          name: string
+          surface_type: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          name: string
+          surface_type?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          location?: string | null
+          name?: string
+          surface_type?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       group_teams: {
         Row: {
           group_id: string
@@ -96,6 +129,7 @@ export type Database = {
       }
       matches: {
         Row: {
+          court_id: string | null
           court_number: string | null
           created_at: string
           group_id: string | null
@@ -114,6 +148,7 @@ export type Database = {
           winner_team_id: string | null
         }
         Insert: {
+          court_id?: string | null
           court_number?: string | null
           created_at?: string
           group_id?: string | null
@@ -132,6 +167,7 @@ export type Database = {
           winner_team_id?: string | null
         }
         Update: {
+          court_id?: string | null
           court_number?: string | null
           created_at?: string
           group_id?: string | null
@@ -150,6 +186,13 @@ export type Database = {
           winner_team_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "matches_court_id_fkey"
+            columns: ["court_id"]
+            isOneToOne: false
+            referencedRelation: "courts"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "matches_group_id_fkey"
             columns: ["group_id"]
