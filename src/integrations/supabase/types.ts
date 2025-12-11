@@ -79,6 +79,8 @@ export type Database = {
       }
       group_teams: {
         Row: {
+          games_lost: number
+          games_won: number
           group_id: string
           id: string
           matches_lost: number
@@ -89,6 +91,8 @@ export type Database = {
           team_id: string
         }
         Insert: {
+          games_lost?: number
+          games_won?: number
           group_id: string
           id?: string
           matches_lost?: number
@@ -99,6 +103,8 @@ export type Database = {
           team_id: string
         }
         Update: {
+          games_lost?: number
+          games_won?: number
           group_id?: string
           id?: string
           matches_lost?: number
