@@ -8,7 +8,8 @@ import {
   Award, 
   GitBranch,
   LogOut,
-  Menu
+  Tag,
+  UserCheck
 } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useAuth } from '@/contexts/AuthContext';
@@ -30,6 +31,8 @@ import {
 const menuItems = [
   { title: 'Dashboard', url: '/admin', icon: LayoutDashboard },
   { title: 'Torneos', url: '/admin/tournaments', icon: Trophy },
+  { title: 'Categorías', url: '/admin/categories', icon: Tag },
+  { title: 'Jugadores', url: '/admin/players', icon: UserCheck },
   { title: 'Equipos', url: '/admin/teams', icon: Users },
   { title: 'Canchas', url: '/admin/courts', icon: MapPin },
   { title: 'Inscripciones', url: '/admin/registrations', icon: ClipboardList },
