@@ -32,7 +32,7 @@ export default function Auth() {
 
   useEffect(() => {
     if (user) {
-      navigate('/admin');
+      navigate('/perfil');
     }
   }, [user, navigate]);
 
@@ -57,7 +57,7 @@ export default function Auth() {
       }
     } else {
       toast.success('Sesión iniciada correctamente');
-      navigate('/admin');
+      navigate('/perfil');
     }
   };
 
@@ -82,7 +82,7 @@ export default function Auth() {
       }
     } else {
       toast.success('Cuenta creada correctamente');
-      navigate('/admin');
+      navigate('/perfil');
     }
   };
 
