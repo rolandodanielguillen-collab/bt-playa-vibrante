@@ -9,6 +9,7 @@ import TournamentDetails from "./pages/TournamentDetails";
 import TournamentBrackets from "./pages/TournamentBrackets";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import Profile from "./pages/Profile";
 import AdminLayout from "./layouts/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
 import Tournaments from "./pages/admin/Tournaments";
@@ -33,6 +34,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/perfil" element={<Profile />} />
             <Route path="/torneo/:id" element={<TournamentDetails />} />
             <Route path="/torneo/:id/llaves" element={<TournamentBrackets />} />
             
