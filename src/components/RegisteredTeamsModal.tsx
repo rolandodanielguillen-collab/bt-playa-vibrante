@@ -15,6 +15,28 @@ interface RegisteredTeamsModalProps {
 export const RegisteredTeamsModal = ({ open, onOpenChange, tournamentId }: RegisteredTeamsModalProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
+  // Fetch tournament categories from the junction table
+  const { data: tournamentCategories } = useQuery({
+    queryKey: ['tournament-categories-names', tournamentId],
+    queryFn: async () => {
+      if (!tournamentId) return [];
+      const { data, error } = await supabase
+        .from('tournament_categories')
+        .select(`
+          category_id,
+          category:categories (
+            id,
+            name
+          )
+        `)
+        .eq('tournament_id', tournamentId);
+      
+      if (error) throw error;
+      return data?.map(tc => tc.category) || [];
+    },
+    enabled: open && !!tournamentId,
+  });
+
   const { data: registrations, isLoading } = useQuery({
     queryKey: ['registrations-public', tournamentId],
     queryFn: async () => {
@@ -46,12 +68,16 @@ export const RegisteredTeamsModal = ({ open, onOpenChange, tournamentId }: Regis
     enabled: open && !!tournamentId,
   });
 
-  // Get unique categories from registrations
+  // Get categories - prefer from junction table, fallback to tournament.category
   const categories = useMemo(() => {
+    if (tournamentCategories && tournamentCategories.length > 0) {
+      return tournamentCategories.map(c => c?.name).filter(Boolean) as string[];
+    }
+    // Fallback to legacy category field
     if (!registrations) return [];
     const uniqueCategories = [...new Set(registrations.map(r => r.tournament?.category).filter(Boolean))];
     return uniqueCategories as string[];
-  }, [registrations]);
+  }, [tournamentCategories, registrations]);
 
   // Filter registrations by selected category
   const filteredRegistrations = useMemo(() => {
