@@ -4,6 +4,7 @@ import { Menu, X, User, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAuth } from '@/contexts/AuthContext';
+import { Shield } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +17,7 @@ import logo from '@/assets/logo-bt.png';
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { language, toggleLanguage, t } = useLanguage();
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -123,6 +124,14 @@ const Header = () => {
                   <DropdownMenuItem onClick={() => navigate('/perfil')}>
                     Mi Perfil
                   </DropdownMenuItem>
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuItem onClick={() => navigate('/admin')}>
+                        <Shield className="h-4 w-4 mr-2" />
+                        Panel Admin
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="h-4 w-4 mr-2" />
@@ -199,6 +208,12 @@ const Header = () => {
                     <User className="h-4 w-4 mr-2" />
                     Mi Perfil
                   </Button>
+                  {isAdmin && (
+                    <Button variant="outline" onClick={() => { navigate('/admin'); setMobileMenuOpen(false); }} className="w-full justify-start">
+                      <Shield className="h-4 w-4 mr-2" />
+                      Panel Admin
+                    </Button>
+                  )}
                   <Button variant="ghost" onClick={() => { handleSignOut(); setMobileMenuOpen(false); }} className="w-full justify-start text-destructive">
                     <LogOut className="h-4 w-4 mr-2" />
                     Cerrar Sesión
