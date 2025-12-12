@@ -6,8 +6,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 interface InscriptionProps {
@@ -17,6 +19,9 @@ interface InscriptionProps {
 
 const Inscription = ({ tournamentId, tournamentName }: InscriptionProps) => {
   const { t } = useLanguage();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   
   // Fetch categories from database
   const { data: categories = [] } = useQuery({
@@ -49,7 +54,76 @@ const Inscription = ({ tournamentId, tournamentName }: InscriptionProps) => {
     acceptTerms: false,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Mutation to create team and registration
+  const registerMutation = useMutation({
+    mutationFn: async () => {
+      if (!user) throw new Error('Debes iniciar sesión para inscribirte');
+      if (!tournamentId) throw new Error('ID de torneo no válido');
+
+      // Create team
+      const teamName = `${formData.player1FirstName} ${formData.player1LastName} / ${formData.player2FirstName} ${formData.player2LastName}`;
+      const city = formData.player1City || formData.player2City;
+
+      const { data: team, error: teamError } = await supabase
+        .from('teams')
+        .insert({
+          name: teamName,
+          player1_name: `${formData.player1FirstName} ${formData.player1LastName}`,
+          player1_email: formData.player1Email,
+          player2_name: `${formData.player2FirstName} ${formData.player2LastName}`,
+          player2_email: formData.player2Email,
+          city: city,
+          captain_user_id: user.id,
+        })
+        .select()
+        .single();
+
+      if (teamError) throw teamError;
+
+      // Create registration
+      const { error: regError } = await supabase
+        .from('registrations')
+        .insert({
+          team_id: team.id,
+          tournament_id: tournamentId,
+          registered_by: user.id,
+          status: 'pending_payment',
+        });
+
+      if (regError) throw regError;
+
+      return team;
+    },
+    onSuccess: () => {
+      toast.success('¡Inscripción realizada con éxito! Pendiente de pago.');
+      queryClient.invalidateQueries({ queryKey: ['registrations', tournamentId] });
+      
+      // Reset form
+      setFormData({
+        player1FirstName: '',
+        player1LastName: '',
+        player1Document: '',
+        player1Phone: '',
+        player1Email: '',
+        player1City: '',
+        player2FirstName: '',
+        player2LastName: '',
+        player2Document: '',
+        player2Phone: '',
+        player2Email: '',
+        player2City: '',
+        category: '',
+        acceptTerms: false,
+      });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validation
@@ -71,48 +145,20 @@ const Inscription = ({ tournamentId, tournamentName }: InscriptionProps) => {
       return;
     }
 
-    // WhatsApp message
-    const phone = '595981189807';
-    const tournamentInfo = tournamentName ? `*Torneo:* ${tournamentName}\n\n` : '';
-    const message = encodeURIComponent(
-      `*Nueva Inscripción - BT Hernandarias*\n\n` +
-      tournamentInfo +
-      `*JUGADOR 1*\n` +
-      `Nombre: ${formData.player1FirstName} ${formData.player1LastName}\n` +
-      `Documento: ${formData.player1Document}\n` +
-      `Celular: ${formData.player1Phone}\n` +
-      `Email: ${formData.player1Email}\n` +
-      `Ciudad: ${formData.player1City}\n\n` +
-      `*JUGADOR 2*\n` +
-      `Nombre: ${formData.player2FirstName} ${formData.player2LastName}\n` +
-      `Documento: ${formData.player2Document}\n` +
-      `Celular: ${formData.player2Phone}\n` +
-      `Email: ${formData.player2Email}\n` +
-      `Ciudad: ${formData.player2City}\n\n` +
-      `*Categoría:* ${formData.category}\n` +
-      `*Términos aceptados:* Sí`
-    );
-    
-    window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
-    toast.success('¡Redirigiendo a WhatsApp!');
-    
-    // Reset form
-    setFormData({
-      player1FirstName: '',
-      player1LastName: '',
-      player1Document: '',
-      player1Phone: '',
-      player1Email: '',
-      player1City: '',
-      player2FirstName: '',
-      player2LastName: '',
-      player2Document: '',
-      player2Phone: '',
-      player2Email: '',
-      player2City: '',
-      category: '',
-      acceptTerms: false,
-    });
+    // Check if user is logged in
+    if (!user) {
+      toast.error('Debes iniciar sesión para inscribirte');
+      navigate('/auth');
+      return;
+    }
+
+    // Save to database
+    setIsSubmitting(true);
+    try {
+      await registerMutation.mutateAsync();
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleWhatsAppDirect = () => {
@@ -131,6 +177,11 @@ const Inscription = ({ tournamentId, tournamentName }: InscriptionProps) => {
           <p className="text-lg text-muted-foreground">
             {t('inscription.subtitle')}
           </p>
+          {!user && (
+            <p className="text-sm text-destructive mt-2">
+              Debes <button onClick={() => navigate('/auth')} className="underline font-semibold">iniciar sesión</button> para inscribirte
+            </p>
+          )}
         </div>
 
         <div className="max-w-4xl mx-auto">
@@ -313,8 +364,13 @@ const Inscription = ({ tournamentId, tournamentName }: InscriptionProps) => {
               </div>
             </div>
 
-            <Button type="submit" size="lg" className="w-full text-lg">
-              {t('inscription.form.submit')}
+            <Button 
+              type="submit" 
+              size="lg" 
+              className="w-full text-lg"
+              disabled={isSubmitting || !user}
+            >
+              {isSubmitting ? 'Enviando...' : t('inscription.form.submit')}
             </Button>
           </form>
 
