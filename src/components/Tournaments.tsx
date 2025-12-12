@@ -1,62 +1,70 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { MapPin, Calendar } from 'lucide-react';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 import tournament1 from '@/assets/tournament-1.jpg';
-import tournament2 from '@/assets/tournament-2.jpg';
-
-type TournamentStatus = 'ongoing' | 'upcoming' | 'completed';
 
 const Tournaments = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [filter, setFilter] = useState('all');
 
-  const tournaments: Array<{
-    id: string;
-    image: string;
-    title: string;
-    date: string;
-    location: string;
-    category: string;
-    status: TournamentStatus;
-  }> = [
-    {
-      id: 'torneo-apertura-2025',
-      image: tournament1,
-      title: t('tournaments.tournament1.title'),
-      date: t('tournaments.tournament1.date'),
-      location: 'Hernandarias, Paraguay',
-      category: 'pro',
-      status: 'ongoing'
+  // Fetch tournaments from database
+  const { data: tournaments = [], isLoading } = useQuery({
+    queryKey: ['tournaments-public'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('tournaments')
+        .select('*')
+        .in('status', ['registration_open', 'registration_closed', 'in_progress', 'completed'])
+        .order('start_date', { ascending: false });
+      
+      if (error) throw error;
+      return data;
     },
-    {
-      id: 'copa-verano-2025',
-      image: tournament2,
-      title: t('tournaments.tournament2.title'),
-      date: t('tournaments.tournament2.date'),
-      location: 'Hernandarias, Paraguay',
-      category: 'amateur',
-      status: 'upcoming'
-    },
-  ];
+  });
+
+  // Map database status to display status
+  const getDisplayStatus = (status: string) => {
+    switch (status) {
+      case 'in_progress':
+        return 'ongoing';
+      case 'registration_open':
+      case 'registration_closed':
+        return 'upcoming';
+      case 'completed':
+        return 'completed';
+      default:
+        return 'upcoming';
+    }
+  };
 
   const filteredTournaments = filter === 'all' 
     ? tournaments 
-    : tournaments.filter(t => t.category === filter);
+    : tournaments.filter(t => t.category.toLowerCase() === filter);
 
   // Agrupar por estado
-  const ongoingTournaments = filteredTournaments.filter(t => t.status === 'ongoing');
-  const upcomingTournaments = filteredTournaments.filter(t => t.status === 'upcoming');
-  const completedTournaments = filteredTournaments.filter(t => t.status === 'completed');
+  const ongoingTournaments = filteredTournaments.filter(t => getDisplayStatus(t.status) === 'ongoing');
+  const upcomingTournaments = filteredTournaments.filter(t => getDisplayStatus(t.status) === 'upcoming');
+  const completedTournaments = filteredTournaments.filter(t => getDisplayStatus(t.status) === 'completed');
+
+  const formatDate = (startDate: string, endDate: string) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    return `${format(start, 'd', { locale: es })} - ${format(end, 'd \'de\' MMMM, yyyy', { locale: es })}`;
+  };
 
   const renderTournamentCard = (tournament: typeof tournaments[0]) => (
     <Card key={tournament.id} className="overflow-hidden hover:shadow-xl transition-shadow">
       <div className="relative h-56 overflow-hidden">
         <img
-          src={tournament.image}
+          src={tournament.image_url || tournament1}
           alt={tournament.title}
           className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
         />
@@ -69,7 +77,7 @@ const Tournaments = () => {
         <div className="space-y-2 mb-6">
           <div className="flex items-center text-muted-foreground">
             <Calendar className="mr-2 h-4 w-4" />
-            {tournament.date}
+            {formatDate(tournament.start_date, tournament.end_date)}
           </div>
           <div className="flex items-center text-muted-foreground">
             <MapPin className="mr-2 h-4 w-4" />
@@ -91,7 +99,7 @@ const Tournaments = () => {
     <Card key={tournament.id} className="overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative h-32 overflow-hidden">
         <img
-          src={tournament.image}
+          src={tournament.image_url || tournament1}
           alt={tournament.title}
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
         />
@@ -104,7 +112,7 @@ const Tournaments = () => {
         <div className="space-y-1 mb-4">
           <div className="flex items-center text-muted-foreground text-sm">
             <Calendar className="mr-1.5 h-3 w-3" />
-            <span className="text-xs">{tournament.date}</span>
+            <span className="text-xs">{formatDate(tournament.start_date, tournament.end_date)}</span>
           </div>
           <div className="flex items-center text-muted-foreground text-sm">
             <MapPin className="mr-1.5 h-3 w-3" />
@@ -122,6 +130,18 @@ const Tournaments = () => {
       </div>
     </Card>
   );
+
+  if (isLoading) {
+    return (
+      <section id="tournaments" className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center">
+            <p className="text-muted-foreground">Cargando torneos...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="tournaments" className="py-20 bg-background">
@@ -150,8 +170,8 @@ const Tournaments = () => {
             {t('tournaments.amateur')}
           </Button>
           <Button
-            variant={filter === 'mixed' ? 'default' : 'outline'}
-            onClick={() => setFilter('mixed')}
+            variant={filter === 'mixto' ? 'default' : 'outline'}
+            onClick={() => setFilter('mixto')}
           >
             {t('tournaments.mixed')}
           </Button>
