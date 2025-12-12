@@ -3,6 +3,8 @@ import { Users, UserCheck, Check } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useState, useMemo } from 'react';
 
 interface RegisteredTeamsModalProps {
   open: boolean;
@@ -11,6 +13,8 @@ interface RegisteredTeamsModalProps {
 }
 
 export const RegisteredTeamsModal = ({ open, onOpenChange, tournamentId }: RegisteredTeamsModalProps) => {
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
   const { data: registrations, isLoading } = useQuery({
     queryKey: ['registrations-public', tournamentId],
     queryFn: async () => {
@@ -42,8 +46,21 @@ export const RegisteredTeamsModal = ({ open, onOpenChange, tournamentId }: Regis
     enabled: open && !!tournamentId,
   });
 
+  // Get unique categories from registrations
+  const categories = useMemo(() => {
+    if (!registrations) return [];
+    const uniqueCategories = [...new Set(registrations.map(r => r.tournament?.category).filter(Boolean))];
+    return uniqueCategories as string[];
+  }, [registrations]);
+
+  // Filter registrations by selected category
+  const filteredRegistrations = useMemo(() => {
+    if (!registrations) return [];
+    if (selectedCategory === 'all') return registrations;
+    return registrations.filter(r => r.tournament?.category === selectedCategory);
+  }, [registrations, selectedCategory]);
+
   const isPaid = (status: string) => status === 'confirmed' || status === 'paid';
-  const tournamentCategory = registrations?.[0]?.tournament?.category || 'Sin categoría';
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -61,15 +78,29 @@ export const RegisteredTeamsModal = ({ open, onOpenChange, tournamentId }: Regis
           </div>
         ) : registrations && registrations.length > 0 ? (
           <div className="space-y-4">
-            {/* Categoría del torneo */}
-            <div className="text-center">
-              <Badge variant="secondary" className="text-base px-4 py-1">
-                {tournamentCategory}
-              </Badge>
-            </div>
+            {/* Category filter - shows dropdown when multiple, badge when single */}
+            {categories.length > 1 ? (
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Filtrar por categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas las categorías</SelectItem>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : (
+              <div className="text-center">
+                <Badge variant="secondary" className="text-base px-4 py-1">
+                  {categories[0] || 'Sin categoría'}
+                </Badge>
+              </div>
+            )}
 
             <div className="divide-y divide-border">
-              {registrations.map((reg) => {
+              {filteredRegistrations.map((reg) => {
                 const paid = isPaid(reg.status);
                 return (
                   <div key={reg.id} className="py-4 grid grid-cols-2 gap-4">
