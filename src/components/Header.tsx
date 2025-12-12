@@ -1,15 +1,29 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, User, LogOut } from 'lucide-react';
 import { Button } from './ui/button';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useAuth } from '@/contexts/AuthContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 import logo from '@/assets/logo-bt.png';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { language, toggleLanguage, t } = useLanguage();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   const scrollToSection = (sectionId: string) => {
     // If not on home page, navigate to home first
@@ -85,7 +99,7 @@ const Header = () => {
             </button>
           </nav>
 
-          {/* CTA and Language Selector */}
+          {/* CTA, Language Selector and User Menu */}
           <div className="hidden md:flex items-center gap-4">
             <button
               onClick={toggleLanguage}
@@ -96,6 +110,31 @@ const Header = () => {
             <Button onClick={() => scrollToSection('tournaments')} size="lg">
               {t('cta.signup')}
             </Button>
+            
+            {/* User Icon */}
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => navigate('/perfil')}>
+                    Mi Perfil
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Cerrar Sesión
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button variant="ghost" size="icon" className="rounded-full" onClick={() => navigate('/auth')}>
+                <User className="h-5 w-5" />
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -150,6 +189,27 @@ const Header = () => {
               <Button onClick={() => scrollToSection('tournaments')} className="flex-1">
                 {t('cta.signup')}
               </Button>
+            </div>
+            
+            {/* Mobile User Menu */}
+            <div className="border-t border-border pt-4 mt-2">
+              {user ? (
+                <div className="flex flex-col gap-2">
+                  <Button variant="outline" onClick={() => { navigate('/perfil'); setMobileMenuOpen(false); }} className="w-full justify-start">
+                    <User className="h-4 w-4 mr-2" />
+                    Mi Perfil
+                  </Button>
+                  <Button variant="ghost" onClick={() => { handleSignOut(); setMobileMenuOpen(false); }} className="w-full justify-start text-destructive">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Cerrar Sesión
+                  </Button>
+                </div>
+              ) : (
+                <Button onClick={() => { navigate('/auth'); setMobileMenuOpen(false); }} className="w-full">
+                  <User className="h-4 w-4 mr-2" />
+                  Iniciar Sesión
+                </Button>
+              )}
             </div>
           </nav>
         )}
