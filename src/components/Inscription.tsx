@@ -98,7 +98,7 @@ const Inscription = ({ tournamentId, tournamentName }: InscriptionProps) => {
     },
     onSuccess: () => {
       toast.success('¡Inscripción realizada con éxito! Pendiente de pago.');
-      queryClient.invalidateQueries({ queryKey: ['registrations', tournamentId] });
+      queryClient.invalidateQueries({ queryKey: ['registrations-public', tournamentId] });
       
       // Reset form
       setFormData({
