@@ -6,6 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Checkbox } from './ui/checkbox';
 import { Label } from './ui/label';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 interface InscriptionProps {
@@ -15,6 +17,21 @@ interface InscriptionProps {
 
 const Inscription = ({ tournamentId, tournamentName }: InscriptionProps) => {
   const { t } = useLanguage();
+  
+  // Fetch categories from database
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name');
+      
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const [formData, setFormData] = useState({
     player1FirstName: '',
     player1LastName: '',
@@ -260,13 +277,15 @@ const Inscription = ({ tournamentId, tournamentName }: InscriptionProps) => {
             <div className="space-y-2">
               <Label htmlFor="category">{t('inscription.form.category')} *</Label>
               <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
-                <SelectTrigger id="category">
+                <SelectTrigger id="category" className="w-full">
                   <SelectValue placeholder={t('inscription.form.category')} />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="amateur">{t('inscription.form.category.amateur')}</SelectItem>
-                  <SelectItem value="mixed">{t('inscription.form.category.mixed')}</SelectItem>
-                  <SelectItem value="pro">{t('inscription.form.category.pro')}</SelectItem>
+                <SelectContent className="w-full">
+                  {categories.map((category) => (
+                    <SelectItem key={category.id} value={category.name}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
