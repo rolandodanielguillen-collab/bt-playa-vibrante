@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Users, UserCheck, Check } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { Badge } from '@/components/ui/badge';
 
 interface RegisteredTeamsModalProps {
   open: boolean;
@@ -26,6 +27,10 @@ export const RegisteredTeamsModal = ({ open, onOpenChange, tournamentId }: Regis
             name,
             player1_name,
             player2_name
+          ),
+          tournament:tournaments (
+            id,
+            category
           )
         `)
         .eq('tournament_id', tournamentId)
@@ -38,6 +43,7 @@ export const RegisteredTeamsModal = ({ open, onOpenChange, tournamentId }: Regis
   });
 
   const isPaid = (status: string) => status === 'confirmed' || status === 'paid';
+  const tournamentCategory = registrations?.[0]?.tournament?.category || 'Sin categoría';
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -54,39 +60,48 @@ export const RegisteredTeamsModal = ({ open, onOpenChange, tournamentId }: Regis
             Cargando inscripciones...
           </div>
         ) : registrations && registrations.length > 0 ? (
-          <div className="divide-y divide-border">
-            {registrations.map((reg) => {
-              const paid = isPaid(reg.status);
-              return (
-                <div key={reg.id} className="py-4 grid grid-cols-2 gap-4">
-                  {/* Jugador 1 */}
-                  <div className="flex items-start gap-2">
-                    <div className="relative">
-                      <UserCheck className={`h-6 w-6 ${paid ? 'text-green-600' : 'text-gray-400'}`} />
-                      {paid && (
-                        <Check className="h-3 w-3 text-gray-600 absolute -right-1 -bottom-0.5" />
-                      )}
+          <div className="space-y-4">
+            {/* Categoría del torneo */}
+            <div className="text-center">
+              <Badge variant="secondary" className="text-base px-4 py-1">
+                {tournamentCategory}
+              </Badge>
+            </div>
+
+            <div className="divide-y divide-border">
+              {registrations.map((reg) => {
+                const paid = isPaid(reg.status);
+                return (
+                  <div key={reg.id} className="py-4 grid grid-cols-2 gap-4">
+                    {/* Jugador 1 */}
+                    <div className="flex items-start gap-2">
+                      <div className="relative">
+                        <UserCheck className={`h-6 w-6 ${paid ? 'text-green-600' : 'text-gray-400'}`} />
+                        {paid && (
+                          <Check className="h-3 w-3 text-gray-600 absolute -right-1 -bottom-0.5" />
+                        )}
+                      </div>
+                      <span className={`font-semibold uppercase text-sm leading-tight ${paid ? 'text-foreground' : 'text-muted-foreground'}`}>
+                        {reg.team?.player1_name}
+                      </span>
                     </div>
-                    <span className={`font-semibold uppercase text-sm leading-tight ${paid ? 'text-foreground' : 'text-muted-foreground'}`}>
-                      {reg.team?.player1_name}
-                    </span>
-                  </div>
-                  
-                  {/* Jugador 2 */}
-                  <div className="flex items-start gap-2">
-                    <div className="relative">
-                      <UserCheck className={`h-6 w-6 ${paid ? 'text-green-600' : 'text-gray-400'}`} />
-                      {paid && (
-                        <Check className="h-3 w-3 text-gray-600 absolute -right-1 -bottom-0.5" />
-                      )}
+                    
+                    {/* Jugador 2 */}
+                    <div className="flex items-start gap-2">
+                      <div className="relative">
+                        <UserCheck className={`h-6 w-6 ${paid ? 'text-green-600' : 'text-gray-400'}`} />
+                        {paid && (
+                          <Check className="h-3 w-3 text-gray-600 absolute -right-1 -bottom-0.5" />
+                        )}
+                      </div>
+                      <span className={`font-semibold uppercase text-sm leading-tight ${paid ? 'text-foreground' : 'text-muted-foreground'}`}>
+                        {reg.team?.player2_name}
+                      </span>
                     </div>
-                    <span className={`font-semibold uppercase text-sm leading-tight ${paid ? 'text-foreground' : 'text-muted-foreground'}`}>
-                      {reg.team?.player2_name}
-                    </span>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         ) : (
           <div className="text-center py-8 text-muted-foreground">
