@@ -100,6 +100,31 @@ const Inscription = ({ tournamentId, tournamentName }: InscriptionProps) => {
       toast.success('¡Inscripción realizada con éxito! Pendiente de pago.');
       queryClient.invalidateQueries({ queryKey: ['registrations-public', tournamentId] });
       
+      // Send WhatsApp with registration details
+      const phone = '595981189807';
+      const message = `🎾 *NUEVA INSCRIPCIÓN*
+
+*Torneo:* ${tournamentName || 'Beach Tennis'}
+*Categoría:* ${formData.category}
+
+*Jugador 1:*
+- Nombre: ${formData.player1FirstName} ${formData.player1LastName}
+- Documento: ${formData.player1Document}
+- Teléfono: ${formData.player1Phone}
+- Email: ${formData.player1Email}
+- Ciudad: ${formData.player1City}
+
+*Jugador 2:*
+- Nombre: ${formData.player2FirstName} ${formData.player2LastName}
+- Documento: ${formData.player2Document}
+- Teléfono: ${formData.player2Phone}
+- Email: ${formData.player2Email}
+- Ciudad: ${formData.player2City}
+
+Estado: Pendiente de pago`;
+
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+      
       // Reset form
       setFormData({
         player1FirstName: '',
