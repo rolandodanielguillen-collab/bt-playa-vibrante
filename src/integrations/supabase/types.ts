@@ -540,6 +540,42 @@ export type Database = {
           },
         ]
       }
+      tournament_categories: {
+        Row: {
+          category_id: string
+          created_at: string
+          id: string
+          tournament_id: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          id?: string
+          tournament_id: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          id?: string
+          tournament_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tournament_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tournament_categories_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tournament_history: {
         Row: {
           created_at: string

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -30,6 +31,7 @@ export default function Tournaments() {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -41,6 +43,19 @@ export default function Tournaments() {
     max_teams: 16,
     entry_fee: 0,
     status: 'draft' as 'draft' | 'registration_open' | 'registration_closed' | 'in_progress' | 'completed' | 'cancelled',
+  });
+
+  // Fetch categories
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*')
+        .order('name');
+      if (error) throw error;
+      return data;
+    },
   });
 
   const { data: tournaments, isLoading } = useQuery({
@@ -55,14 +70,52 @@ export default function Tournaments() {
     },
   });
 
+  // Fetch tournament categories when editing
+  const { data: tournamentCategories } = useQuery({
+    queryKey: ['tournament-categories', editingId],
+    queryFn: async () => {
+      if (!editingId) return [];
+      const { data, error } = await supabase
+        .from('tournament_categories')
+        .select('category_id')
+        .eq('tournament_id', editingId);
+      if (error) throw error;
+      return data.map(tc => tc.category_id);
+    },
+    enabled: !!editingId,
+  });
+
+  // Update selected categories when editing tournament changes
+  useEffect(() => {
+    if (tournamentCategories) {
+      setSelectedCategories(tournamentCategories);
+    }
+  }, [tournamentCategories]);
+
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const { error } = await supabase.from('tournaments').insert({
+      // Create tournament
+      const { data: newTournament, error } = await supabase.from('tournaments').insert({
         ...data,
+        category: selectedCategories.length > 0 
+          ? categories?.find(c => c.id === selectedCategories[0])?.name || data.category 
+          : data.category,
         created_by: user!.id,
         registration_deadline: new Date(data.registration_deadline).toISOString(),
-      });
+      }).select().single();
       if (error) throw error;
+
+      // Add tournament categories
+      if (selectedCategories.length > 0) {
+        const categoryInserts = selectedCategories.map(catId => ({
+          tournament_id: newTournament.id,
+          category_id: catId,
+        }));
+        const { error: catError } = await supabase
+          .from('tournament_categories')
+          .insert(categoryInserts);
+        if (catError) throw catError;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tournaments'] });
@@ -76,14 +129,32 @@ export default function Tournaments() {
     mutationFn: async ({ id, data }: { id: string; data: Partial<typeof formData> }) => {
       const { error } = await supabase.from('tournaments').update({
         ...data,
+        category: selectedCategories.length > 0 
+          ? categories?.find(c => c.id === selectedCategories[0])?.name || data.category 
+          : data.category,
         registration_deadline: data.registration_deadline 
           ? new Date(data.registration_deadline).toISOString() 
           : undefined,
       }).eq('id', id);
       if (error) throw error;
+
+      // Update tournament categories - delete existing and insert new
+      await supabase.from('tournament_categories').delete().eq('tournament_id', id);
+      
+      if (selectedCategories.length > 0) {
+        const categoryInserts = selectedCategories.map(catId => ({
+          tournament_id: id,
+          category_id: catId,
+        }));
+        const { error: catError } = await supabase
+          .from('tournament_categories')
+          .insert(categoryInserts);
+        if (catError) throw catError;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tournaments'] });
+      queryClient.invalidateQueries({ queryKey: ['tournament-categories'] });
       toast.success('Torneo actualizado');
       resetForm();
     },
@@ -115,6 +186,7 @@ export default function Tournaments() {
       entry_fee: 0,
       status: 'draft',
     });
+    setSelectedCategories([]);
     setEditingId(null);
     setIsOpen(false);
   };
@@ -136,6 +208,14 @@ export default function Tournaments() {
     setIsOpen(true);
   };
 
+  const handleCategoryToggle = (categoryId: string) => {
+    setSelectedCategories(prev => 
+      prev.includes(categoryId)
+        ? prev.filter(id => id !== categoryId)
+        : [...prev, categoryId]
+    );
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingId) {
@@ -143,6 +223,13 @@ export default function Tournaments() {
     } else {
       createMutation.mutate(formData);
     }
+  };
+
+  // Get category names for a tournament
+  const getTournamentCategoryNames = (tournamentId: string) => {
+    // For now, use the category field from tournament
+    const tournament = tournaments?.find(t => t.id === tournamentId);
+    return tournament?.category || '';
   };
 
   return (
@@ -170,15 +257,46 @@ export default function Tournaments() {
                       required
                     />
                   </div>
-                  <div>
-                    <Label>Categoría</Label>
-                    <Input
-                      value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                      placeholder="Ej: Masculino A, Mixto B"
-                      required
-                    />
+                  
+                  {/* Categories selection */}
+                  <div className="col-span-2">
+                    <Label>Categorías</Label>
+                    <div className="border rounded-md p-3 space-y-2 max-h-40 overflow-y-auto">
+                      {categories?.map((cat) => (
+                        <div key={cat.id} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`cat-${cat.id}`}
+                            checked={selectedCategories.includes(cat.id)}
+                            onCheckedChange={() => handleCategoryToggle(cat.id)}
+                          />
+                          <label
+                            htmlFor={`cat-${cat.id}`}
+                            className="text-sm cursor-pointer"
+                          >
+                            {cat.name}
+                          </label>
+                        </div>
+                      ))}
+                      {(!categories || categories.length === 0) && (
+                        <p className="text-sm text-muted-foreground">
+                          No hay categorías. Cree categorías primero.
+                        </p>
+                      )}
+                    </div>
                   </div>
+
+                  {/* Legacy category field - hidden if categories selected */}
+                  {selectedCategories.length === 0 && (
+                    <div className="col-span-2">
+                      <Label>Categoría (texto libre)</Label>
+                      <Input
+                        value={formData.category}
+                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                        placeholder="Ej: Masculino A, Mixto B"
+                      />
+                    </div>
+                  )}
+
                   <div>
                     <Label>Ubicación</Label>
                     <Input
