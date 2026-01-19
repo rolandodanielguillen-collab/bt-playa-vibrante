@@ -19,10 +19,10 @@ const groupAMatches = [
 ];
 
 const groupAStandings = [
-  { team: "Roberto Kerber\nThiago Lazari", match1: true, match2: true, match3: false, sg: 2 },
-  { team: "Artur Primo\nThiago Gusso", match1: false, match2: true, match3: true, sg: -1 },
-  { team: "Marlon Souza\nLuan Scalon", match1: true, match2: false, match3: true, sg: -1 },
-  { team: "Cássio Manys\nLeonardo Oyarzabal", match1: false, match2: false, match3: false, sg: 0 },
+  { team: "Roberto Kerber\nThiago Lazari", sg: 2, pg: 2, pts: 5.00 },
+  { team: "Artur Primo\nThiago Gusso", sg: -1, pg: 2, pts: 2.00 },
+  { team: "Marlon Souza\nLuan Scalon", sg: -1, pg: 2, pts: -1.00 },
+  { team: "Cássio Manys\nLeonardo Oyarzabal", sg: 0, pg: 0, pts: 0.00 },
 ];
 
 const groupBMatches = [
@@ -35,10 +35,10 @@ const groupBMatches = [
 ];
 
 const groupBStandings = [
-  { team: "Tiago Alves\nFernando Gormanns", match1: false, match2: false, match3: false, sg: 0 },
-  { team: "Leonardo Pacholek\nEnrique Guinart", match1: true, match2: false, match3: true, sg: -3 },
-  { team: "Fabio Kuvada\nFrancisco Summa", match1: false, match2: true, match3: true, sg: 4 },
-  { team: "Eduardo Domingues\nAnderson Ferreira", match1: true, match2: true, match3: false, sg: -1 },
+  { team: "Tiago Alves\nFernando Gormanns", sg: 0, pg: 0, pts: 0.00 },
+  { team: "Leonardo Pacholek\nEnrique Guinart", sg: -3, pg: 2, pts: -3.00 },
+  { team: "Fabio Kuvada\nFrancisco Summa", sg: 4, pg: 2, pts: 4.00 },
+  { team: "Eduardo Domingues\nAnderson Ferreira", sg: -1, pg: 2, pts: -1.00 },
 ];
 
 const quarterfinals = [
