@@ -1,6 +1,5 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle2, XCircle } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Match {
@@ -12,10 +11,9 @@ interface Match {
 
 interface TeamStanding {
   team: string;
-  match1: boolean;
-  match2: boolean;
-  match3: boolean;
   sg: number;
+  pg: number;
+  pts: number;
 }
 
 interface GroupStageProps {
@@ -139,17 +137,16 @@ const formatStandingsTeam = (name: string): { player1: string; player2: string }
   return formatTeamName(name.replace('\n', ' / '));
 };
 
-const StandingsTable = ({ groupName, standings, isMobile }: { groupName: string; standings: TeamStanding[]; isMobile: boolean }) => (
+const StandingsTable = ({ groupName, standings }: { groupName: string; standings: TeamStanding[] }) => (
   <div className="border border-border rounded-lg overflow-hidden bg-card">
     <Table>
       <TableHeader>
         <TableRow className="bg-muted/50">
-          <TableHead className="text-center font-bold text-foreground text-[10px] w-8">Pos</TableHead>
-          <TableHead className="font-bold text-foreground text-[10px]">{groupName}</TableHead>
-          <TableHead className="text-center font-bold text-foreground text-[10px]" colSpan={3}>
-            {isMobile ? "V" : "Victorias"}
-          </TableHead>
-          <TableHead className="text-center font-bold text-foreground text-[10px] w-8">SG</TableHead>
+          <TableHead className="text-center font-bold text-foreground text-[10px] w-10 border-r border-border/50">Pos</TableHead>
+          <TableHead className="font-bold text-foreground text-[10px] border-r border-border/50">Equipo</TableHead>
+          <TableHead className="text-center font-bold text-foreground text-[10px] w-12 border-r border-border/50">SG</TableHead>
+          <TableHead className="text-center font-bold text-foreground text-[10px] w-10 border-r border-border/50">PG</TableHead>
+          <TableHead className="text-center font-bold text-foreground text-[10px] w-14">PTS</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -157,8 +154,8 @@ const StandingsTable = ({ groupName, standings, isMobile }: { groupName: string;
           const { player1, player2 } = formatStandingsTeam(team.team);
           
           return (
-            <TableRow key={idx} className="hover:bg-muted/50">
-              <TableCell className="text-center py-1">
+            <TableRow key={idx} className="hover:bg-muted/50 border-b border-border/50">
+              <TableCell className="text-center py-2 border-r border-border/50">
                 <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full font-bold text-[9px] ${
                   idx === 0 ? 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400' :
                   idx === 1 ? 'bg-gray-300/20 text-gray-700 dark:text-gray-300' :
@@ -168,35 +165,26 @@ const StandingsTable = ({ groupName, standings, isMobile }: { groupName: string;
                   {idx + 1}
                 </span>
               </TableCell>
-              <TableCell className="font-medium text-foreground py-1">
-                <div className="flex flex-col gap-0">
-                  <span className="text-[9px] md:text-xs leading-tight">{player1}</span>
-                  {player2 && <span className="text-[9px] md:text-xs leading-tight">{player2}</span>}
+              <TableCell className="font-medium text-foreground py-2 border-r border-border/50">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[10px] md:text-xs font-semibold leading-tight uppercase">{player1.split(' ')[0]}</span>
+                  <span className="text-[8px] md:text-[10px] text-muted-foreground leading-tight">{player1.split(' ').slice(1).join(' ')}</span>
+                  {player2 && (
+                    <>
+                      <span className="text-[10px] md:text-xs font-semibold leading-tight uppercase mt-1">{player2.split(' ')[0]}</span>
+                      <span className="text-[8px] md:text-[10px] text-muted-foreground leading-tight">{player2.split(' ').slice(1).join(' ')}</span>
+                    </>
+                  )}
                 </div>
               </TableCell>
-              <TableCell className="text-center py-1 px-1">
-                {team.match1 ? (
-                  <CheckCircle2 className="w-3 h-3 text-green-600 mx-auto" />
-                ) : (
-                  <XCircle className="w-3 h-3 text-destructive mx-auto" />
-                )}
-              </TableCell>
-              <TableCell className="text-center py-1 px-1">
-                {team.match2 ? (
-                  <CheckCircle2 className="w-3 h-3 text-green-600 mx-auto" />
-                ) : (
-                  <XCircle className="w-3 h-3 text-destructive mx-auto" />
-                )}
-              </TableCell>
-              <TableCell className="text-center py-1 px-1">
-                {team.match3 ? (
-                  <CheckCircle2 className="w-3 h-3 text-green-600 mx-auto" />
-                ) : (
-                  <XCircle className="w-3 h-3 text-destructive mx-auto" />
-                )}
-              </TableCell>
-              <TableCell className="text-center font-bold text-foreground text-[10px] py-1">
+              <TableCell className="text-center font-bold text-foreground text-[11px] md:text-sm py-2 border-r border-border/50">
                 {team.sg}
+              </TableCell>
+              <TableCell className="text-center font-bold text-foreground text-[11px] md:text-sm py-2 border-r border-border/50">
+                {team.pg}
+              </TableCell>
+              <TableCell className="text-center font-bold text-foreground text-[11px] md:text-sm py-2">
+                {team.pts.toFixed(2)}
               </TableCell>
             </TableRow>
           );
@@ -221,7 +209,7 @@ export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) =
           <MatchesTable matches={matches} />
         </TabsContent>
         <TabsContent value="clasificacion" className="mt-2">
-          <StandingsTable groupName={groupName} standings={standings} isMobile={isMobile} />
+          <StandingsTable groupName={groupName} standings={standings} />
         </TabsContent>
       </Tabs>
     );
@@ -237,7 +225,7 @@ export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) =
         </div>
         <div className="space-y-2">
           <h4 className="text-xs font-bold text-foreground mb-2">🏅 Clasificación</h4>
-          <StandingsTable groupName={groupName} standings={standings} isMobile={isMobile} />
+          <StandingsTable groupName={groupName} standings={standings} />
         </div>
       </div>
     </div>
