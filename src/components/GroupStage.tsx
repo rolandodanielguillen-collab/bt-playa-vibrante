@@ -24,24 +24,47 @@ interface GroupStageProps {
   standings: TeamStanding[];
 }
 
-// Truncate team name for mobile
-const truncateTeam = (name: string, isMobile: boolean) => {
-  if (!isMobile) return name;
-  // Split by " / " for pairs, truncate each name
+// Format team name: first name + last name, stacked vertically
+const formatTeamName = (name: string): { player1: string; player2: string } => {
+  // Split by " / " for pairs
   const parts = name.split(" / ");
   if (parts.length === 2) {
-    return parts.map(p => {
-      const nameParts = p.trim().split(" ");
+    const formatPlayer = (fullName: string) => {
+      const nameParts = fullName.trim().split(" ");
       if (nameParts.length >= 2) {
-        return `${nameParts[0][0]}. ${nameParts[nameParts.length - 1]}`;
+        return `${nameParts[0]} ${nameParts[nameParts.length - 1]}`;
       }
-      return p.length > 10 ? p.substring(0, 10) + "..." : p;
-    }).join(" / ");
+      return fullName;
+    };
+    return {
+      player1: formatPlayer(parts[0]),
+      player2: formatPlayer(parts[1])
+    };
   }
-  return name.length > 20 ? name.substring(0, 20) + "..." : name;
+  return { player1: name, player2: "" };
 };
 
-const MatchesTable = ({ matches, isMobile }: { matches: Match[]; isMobile: boolean }) => (
+// Team name cell with stacked players
+const TeamNameCell = ({ teamName, isWinner }: { teamName: string; isWinner: boolean }) => {
+  const { player1, player2 } = formatTeamName(teamName);
+  
+  return (
+    <div className={`py-2 px-3 ${isWinner ? 'bg-primary/10' : ''}`}>
+      <div className="flex flex-col gap-0.5">
+        <span className={`text-[10px] md:text-xs leading-tight ${isWinner ? 'font-semibold text-primary' : 'text-foreground'}`}>
+          {player1}
+        </span>
+        {player2 && (
+          <span className={`text-[10px] md:text-xs leading-tight ${isWinner ? 'font-semibold text-primary' : 'text-foreground'}`}>
+            {player2}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const MatchesTable = ({ matches }: { matches: Match[] }) => (
   <div className="border border-border rounded-lg overflow-hidden bg-card">
     <Table>
       <TableBody>
@@ -52,27 +75,42 @@ const MatchesTable = ({ matches, isMobile }: { matches: Match[]; isMobile: boole
           const team2Won = match.score2 === 'WO' || (typeof match.score1 === 'number' && typeof match.score2 === 'number' && score2 > score1);
           
           return (
-            <TableRow key={idx} className="hover:bg-muted/50">
-              <TableCell className={`text-[10px] md:text-xs font-medium text-foreground py-1.5 ${team1Won ? 'bg-green-500/10' : ''}`}>
-                {truncateTeam(match.team1, isMobile)}
+            <TableRow key={idx} className="hover:bg-muted/30 border-b border-border">
+              {/* Team 1 */}
+              <TableCell className="p-0 w-[40%]">
+                <TeamNameCell teamName={match.team1} isWinner={team1Won} />
               </TableCell>
-              <TableCell className={`text-center w-8 text-[10px] md:text-xs ${team1Won ? 'bg-green-500/10' : ''}`}>
+              
+              {/* Score 1 */}
+              <TableCell className={`text-center w-12 border-l border-r border-border/50 ${team1Won ? 'bg-primary/10' : 'bg-muted/30'}`}>
                 {match.score1 !== undefined ? (
-                  <span className="font-bold">{match.score1}</span>
+                  <span className={`text-[11px] md:text-sm font-bold ${team1Won ? 'text-primary' : 'text-foreground'}`}>
+                    {match.score1}
+                  </span>
                 ) : (
                   <span className="text-muted-foreground">-</span>
                 )}
               </TableCell>
-              <TableCell className="text-center w-4 text-[10px] text-muted-foreground">x</TableCell>
-              <TableCell className={`text-center w-8 text-[10px] md:text-xs ${team2Won ? 'bg-green-500/10' : ''}`}>
+              
+              {/* X separator */}
+              <TableCell className="text-center w-6 px-0 bg-muted/20">
+                <span className="text-[10px] text-muted-foreground font-medium">x</span>
+              </TableCell>
+              
+              {/* Score 2 */}
+              <TableCell className={`text-center w-12 border-l border-r border-border/50 ${team2Won ? 'bg-primary/10' : 'bg-muted/30'}`}>
                 {match.score2 !== undefined ? (
-                  <span className="font-bold">{match.score2}</span>
+                  <span className={`text-[11px] md:text-sm font-bold ${team2Won ? 'text-primary' : 'text-foreground'}`}>
+                    {match.score2}
+                  </span>
                 ) : (
                   <span className="text-muted-foreground">-</span>
                 )}
               </TableCell>
-              <TableCell className={`text-[10px] md:text-xs font-medium text-foreground py-1.5 ${team2Won ? 'bg-green-500/10' : ''}`}>
-                {truncateTeam(match.team2, isMobile)}
+              
+              {/* Team 2 */}
+              <TableCell className="p-0 w-[40%]">
+                <TeamNameCell teamName={match.team2} isWinner={team2Won} />
               </TableCell>
             </TableRow>
           );
@@ -81,6 +119,25 @@ const MatchesTable = ({ matches, isMobile }: { matches: Match[]; isMobile: boole
     </Table>
   </div>
 );
+
+// Format standings team name (can have newline)
+const formatStandingsTeam = (name: string): { player1: string; player2: string } => {
+  const parts = name.split('\n');
+  if (parts.length === 2) {
+    const formatPlayer = (fullName: string) => {
+      const nameParts = fullName.trim().split(" ");
+      if (nameParts.length >= 2) {
+        return `${nameParts[0]} ${nameParts[nameParts.length - 1]}`;
+      }
+      return fullName;
+    };
+    return {
+      player1: formatPlayer(parts[0]),
+      player2: formatPlayer(parts[1])
+    };
+  }
+  return formatTeamName(name.replace('\n', ' / '));
+};
 
 const StandingsTable = ({ groupName, standings, isMobile }: { groupName: string; standings: TeamStanding[]; isMobile: boolean }) => (
   <div className="border border-border rounded-lg overflow-hidden bg-card">
@@ -96,47 +153,54 @@ const StandingsTable = ({ groupName, standings, isMobile }: { groupName: string;
         </TableRow>
       </TableHeader>
       <TableBody>
-        {standings.map((team, idx) => (
-          <TableRow key={idx} className="hover:bg-muted/50">
-            <TableCell className="text-center py-1">
-              <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full font-bold text-[9px] ${
-                idx === 0 ? 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400' :
-                idx === 1 ? 'bg-gray-300/20 text-gray-700 dark:text-gray-300' :
-                idx === 2 ? 'bg-orange-500/20 text-orange-700 dark:text-orange-400' :
-                'bg-muted text-muted-foreground'
-              }`}>
-                {idx + 1}
-              </span>
-            </TableCell>
-            <TableCell className="font-medium text-foreground text-[9px] md:text-xs py-1">
-              {truncateTeam(team.team.replace('\n', ' / '), isMobile)}
-            </TableCell>
-            <TableCell className="text-center py-1 px-1">
-              {team.match1 ? (
-                <CheckCircle2 className="w-3 h-3 text-green-600 mx-auto" />
-              ) : (
-                <XCircle className="w-3 h-3 text-destructive mx-auto" />
-              )}
-            </TableCell>
-            <TableCell className="text-center py-1 px-1">
-              {team.match2 ? (
-                <CheckCircle2 className="w-3 h-3 text-green-600 mx-auto" />
-              ) : (
-                <XCircle className="w-3 h-3 text-destructive mx-auto" />
-              )}
-            </TableCell>
-            <TableCell className="text-center py-1 px-1">
-              {team.match3 ? (
-                <CheckCircle2 className="w-3 h-3 text-green-600 mx-auto" />
-              ) : (
-                <XCircle className="w-3 h-3 text-destructive mx-auto" />
-              )}
-            </TableCell>
-            <TableCell className="text-center font-bold text-foreground text-[10px] py-1">
-              {team.sg}
-            </TableCell>
-          </TableRow>
-        ))}
+        {standings.map((team, idx) => {
+          const { player1, player2 } = formatStandingsTeam(team.team);
+          
+          return (
+            <TableRow key={idx} className="hover:bg-muted/50">
+              <TableCell className="text-center py-1">
+                <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full font-bold text-[9px] ${
+                  idx === 0 ? 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400' :
+                  idx === 1 ? 'bg-gray-300/20 text-gray-700 dark:text-gray-300' :
+                  idx === 2 ? 'bg-orange-500/20 text-orange-700 dark:text-orange-400' :
+                  'bg-muted text-muted-foreground'
+                }`}>
+                  {idx + 1}
+                </span>
+              </TableCell>
+              <TableCell className="font-medium text-foreground py-1">
+                <div className="flex flex-col gap-0">
+                  <span className="text-[9px] md:text-xs leading-tight">{player1}</span>
+                  {player2 && <span className="text-[9px] md:text-xs leading-tight">{player2}</span>}
+                </div>
+              </TableCell>
+              <TableCell className="text-center py-1 px-1">
+                {team.match1 ? (
+                  <CheckCircle2 className="w-3 h-3 text-green-600 mx-auto" />
+                ) : (
+                  <XCircle className="w-3 h-3 text-destructive mx-auto" />
+                )}
+              </TableCell>
+              <TableCell className="text-center py-1 px-1">
+                {team.match2 ? (
+                  <CheckCircle2 className="w-3 h-3 text-green-600 mx-auto" />
+                ) : (
+                  <XCircle className="w-3 h-3 text-destructive mx-auto" />
+                )}
+              </TableCell>
+              <TableCell className="text-center py-1 px-1">
+                {team.match3 ? (
+                  <CheckCircle2 className="w-3 h-3 text-green-600 mx-auto" />
+                ) : (
+                  <XCircle className="w-3 h-3 text-destructive mx-auto" />
+                )}
+              </TableCell>
+              <TableCell className="text-center font-bold text-foreground text-[10px] py-1">
+                {team.sg}
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   </div>
@@ -154,7 +218,7 @@ export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) =
           <TabsTrigger value="clasificacion" className="text-[10px]">🏅 Clasificación</TabsTrigger>
         </TabsList>
         <TabsContent value="resultados" className="mt-2">
-          <MatchesTable matches={matches} isMobile={isMobile} />
+          <MatchesTable matches={matches} />
         </TabsContent>
         <TabsContent value="clasificacion" className="mt-2">
           <StandingsTable groupName={groupName} standings={standings} isMobile={isMobile} />
@@ -169,7 +233,7 @@ export const GroupStage = ({ groupName, matches, standings }: GroupStageProps) =
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="space-y-2">
           <h4 className="text-xs font-bold text-foreground mb-2">📋 Resultados</h4>
-          <MatchesTable matches={matches} isMobile={isMobile} />
+          <MatchesTable matches={matches} />
         </div>
         <div className="space-y-2">
           <h4 className="text-xs font-bold text-foreground mb-2">🏅 Clasificación</h4>
